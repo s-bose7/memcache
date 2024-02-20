@@ -1,0 +1,6 @@
+class Node {
+public:
+private:
+
+}
+
