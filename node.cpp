@@ -1,6 +1,0 @@
-class Node {
-public:
-private:
-
-}
-

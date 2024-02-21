@@ -1,7 +1,0 @@
-
-class LFUCache {
-public:
-private:
-
-}
-
