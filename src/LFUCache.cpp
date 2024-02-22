@@ -2,11 +2,13 @@
 #include "../include/FrequencyNode.h"
 #include "../include/MapItem.h"
 
-// Define member function implementations for LFUCache class
+using namespace std;
 
 LFUCache::LFUCache(int capacity) {
     // Initialize LFU cache with given capacity
-    // Implement constructor logic here
+    this->MAX_SIZE = capacity;
+    this->curr_size = 0;
+    this->HEAD = new FrequencyNode();
 }
 
 int LFUCache::get(int key) {
