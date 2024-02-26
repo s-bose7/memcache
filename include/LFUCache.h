@@ -31,9 +31,11 @@ private:
      * the least recently used (LRU) key would be invalidated.
     */
     void apply_eviction_policy();
-
+    
+    /* Helper methods */
     FrequencyNode* get_new_freq_node(int freq, FrequencyNode* perv, FrequencyNode* next);
-    void put_keynode_as_nodelist(FrequencyNode* parent, KeyNode* child);
+    void put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child);
+    void remove_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child);
 
 public:
     /* constructor */
