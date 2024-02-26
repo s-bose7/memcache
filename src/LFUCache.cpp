@@ -33,25 +33,7 @@ void LFUCache::update_the_frequency(int key){
     bykey.at(key).parent = new_freq;
 
     KeyNode *keynode_to_shift = map_item.node;
-    if(curr_freq->local_keys_length == 1) {
-        // If the current frequency has only one key, remove it and delete the frequency node
-        curr_freq->prev->next = curr_freq->next;
-        curr_freq->next->prev = curr_freq->prev;
-        delete curr_freq;
-
-    }else {
-        // If the current frequency has more than one key, remove the key node from the current frequency
-        if (keynode_to_shift == curr_freq->mrukeynode) {
-            curr_freq->mrukeynode = curr_freq->mrukeynode->down;
-        } else if (keynode_to_shift == curr_freq->lrukeynode) {
-            curr_freq->lrukeynode = curr_freq->lrukeynode->up;
-        } else {
-            keynode_to_shift->up->down = keynode_to_shift->down;
-            keynode_to_shift->down->up = keynode_to_shift->up;
-        }
-        curr_freq->local_keys_length--;
-    }
-    keynode_to_shift->up = keynode_to_shift->down = nullptr;
+    remove_keynode_as_nodelist(curr_freq, keynode_to_shift);
     put_keynode_as_nodelist(new_freq, keynode_to_shift);
 }
 
@@ -119,16 +101,41 @@ FrequencyNode* LFUCache::get_new_freq_node(int freq, FrequencyNode* prev, Freque
     return new_freq_node;
 }
 
-void LFUCache::put_keynode_as_nodelist(FrequencyNode* parent, KeyNode* child) {
-    parent->local_keys_length++;
-    if(!parent->mrukeynode && !parent->lrukeynode){
-        parent->mrukeynode = parent->lrukeynode = child;
+
+void LFUCache::put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child) {
+    new_parent->local_keys_length++;
+    if(!new_parent->mrukeynode && !new_parent->lrukeynode){
+        new_parent->mrukeynode = new_parent->lrukeynode = child;
     }else{
-        child->down = parent->mrukeynode;
-        parent->mrukeynode->up = child;
-        parent->mrukeynode = child;
+        child->down = new_parent->mrukeynode;
+        new_parent->mrukeynode->up = child;
+        new_parent->mrukeynode = child;
     }
 }
+
+
+void LFUCache::remove_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child){
+    if(old_parent->local_keys_length == 1) {
+        // If the current frequency has only one key, remove it and delete the frequency node
+        old_parent->prev->next = old_parent->next;
+        old_parent->next->prev = old_parent->prev;
+        delete old_parent;
+
+    }else {
+        // If the current frequency has more than one key, remove the key node from the current frequency
+        if (child == old_parent->mrukeynode) {
+            old_parent->mrukeynode = old_parent->mrukeynode->down;
+        } else if (child == old_parent->lrukeynode) {
+            old_parent->lrukeynode = old_parent->lrukeynode->up;
+        } else {
+            child->up->down = child->down;
+            child->down->up = child->up;
+        }
+        old_parent->local_keys_length--;
+    }
+    child->up = child->down = nullptr;
+}
+
 
 bool LFUCache::delete_key(int key) {
     return false;
