@@ -13,6 +13,7 @@ public:
     /* KeyNode *node: pointer to the node that holds the key under parent */
     KeyNode *node;
     /* constructor */
+    // MapItem(); 
     MapItem(int value, FrequencyNode *parent, KeyNode *node);
 };
 
