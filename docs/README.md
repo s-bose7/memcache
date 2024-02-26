@@ -15,9 +15,9 @@ Before 2010, LFU (Least Frequently Used) cache eviction policies commonly relied
 
 ## Algorithm Overview
 
-The constant O(1) runtime is achieved by utilizing two containers (preferably linked lists and/or hash sets) and another hash table to access elements by their keys.
+The constant O(1) runtime is achieved by utilizing a nested doubly linked list with a hash table to access elements by their keys.
 
-A doubly linked list is used to link together nodes representing a set of nodes that have the same access frequency (rectangular boxes). This set of nodes with the same access frequency forms a doubly linked list of such nodes (oval boxes). Each node in the oval boxes has a pointer to its parent frequency node, so that later on we can access frequencies directly. An additional hashmap is used to store elements by key which maps to its value, parent node, and some other metadata based on the implementation requirements. 
+The doubly linked list is used to link together nodes representing a set of nodes that have the same access frequency (squares). This set of nodes with the same access frequency forms a doubly linked list of such nodes (circles). Each circular node has a pointer to its parent frequency node, so that later on we can access frequencies directly. An additional hashmap is used to store elements by key which maps to its value, parent node, and some other metadata dictates by the implementation. 
 
 ![lfu-data-structure](https://github.com/s-bose7/LFU-Cache/assets/69990740/5fcca4d4-e89d-4be3-9300-8aae715959c3)
 
