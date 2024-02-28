@@ -23,17 +23,17 @@ int LFUCache::get(int key) {
 void LFUCache::update_the_frequency(int key){
     MapItem& map_item = bykey.at(key);
     
-    FrequencyNode *curr_freq = map_item.parent;
-    FrequencyNode *new_freq = curr_freq->next;
+    FrequencyNode *cur_freq = map_item.parent;
+    FrequencyNode *new_freq = cur_freq->next;
 
-    if(new_freq->frequency != curr_freq->frequency + 1){
-        new_freq = get_new_freq_node(curr_freq->frequency + 1, curr_freq, new_freq);
+    if(new_freq->frequency != cur_freq->frequency + 1){
+        new_freq = get_new_freq_node(cur_freq->frequency + 1, cur_freq, new_freq);
     }
 
     bykey.at(key).parent = new_freq;
 
     KeyNode *keynode_to_shift = map_item.node;
-    remove_keynode_as_nodelist(curr_freq, keynode_to_shift);
+    rmv_keynode_as_nodelist(cur_freq, keynode_to_shift);
     put_keynode_as_nodelist(new_freq, keynode_to_shift);
 }
 
@@ -61,6 +61,7 @@ void LFUCache::put(int key, int value) {
     }
     KeyNode *key_node = new KeyNode(key);
     put_keynode_as_nodelist(freq_node, key_node);
+    // Put a new entry into the Hash Table
     bykey.insert(make_pair(key, MapItem(value, freq_node, key_node)));
     ++this->curr_size;
 }
@@ -114,7 +115,7 @@ void LFUCache::put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child
 }
 
 
-void LFUCache::remove_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child){
+void LFUCache::rmv_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child){
     if(old_parent->local_keys_length == 1) {
         // If the current frequency has only one key, remove it and delete the frequency node
         old_parent->prev->next = old_parent->next;
