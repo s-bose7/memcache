@@ -1,4 +1,4 @@
-# LFU-Cache
+# In-memory Cache
 
 ## Introduction
 
