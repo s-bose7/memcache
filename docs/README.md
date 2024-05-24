@@ -31,3 +31,27 @@ The doubly linked list is used to link together nodes representing a set of node
 
 
 This approach offers efficient cache eviction with a constant time complexity, making it suitable for high-throughput systems like proxy-servers CDNs etc. 
+
+## Build Process
+
+### Step 1: Navigate to the Source Directory
+```bash
+$ cd /path/to/lfu-cache/src
+```
+### Step 2: Compile Source Files into Object Files
+```bash
+$ g++ -c KeyNode.cpp -o ../build/KeyNode.o
+$ g++ -c FrequencyNode.cpp -o ../build/FrequencyNode.o
+$ g++ -c MapItem.cpp -o ../build/MapItem.o
+$ g++ -c LFUCache.cpp -o ../build/LFUCache.o
+```
+
+### Step 3: Link Object Files to Create Executable Binary
+```bash
+$ g++ ../build/LFUCache.o ../build/KeyNode.o ../build/FrequencyNode.o ../build/MapItem.o -o ../build/lfu_cache
+```
+### Step 4: Run the Program
+```bash
+$ cd ../build
+$ ./lru_cache
+```
