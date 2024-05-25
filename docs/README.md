@@ -36,7 +36,7 @@ The doubly linked list is used to link together nodes representing a set of node
 ![lfu-data-structure](https://github.com/s-bose7/LFU-Cache/assets/69990740/5fcca4d4-e89d-4be3-9300-8aae715959c3)
 
 
-This approach offers efficient cache eviction with a constant time complexity, making it suitable for high-throughput systems like proxy-servers CDNs etc. 
+This approach offers efficient cache eviction with a constant time complexity, making it suitable for high-throughput systems like proxy-servers, CDNs etc. 
 
 ## Build Process
 
