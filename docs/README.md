@@ -27,7 +27,7 @@ Implementing LFRU is complex due to cache partitioning into privileged and unpri
 
 Our cache avoids multiple partitions. It’s designed to access the least-frequent and least-recent keys in O(1) time. If multiple least-frequent keys exist, we evict the least-recent one, ensuring efficiency.
 
-## Algorithm Overview
+## Cache Replacement Algorithm Overview
 
 The constant O(1) runtime is achieved by utilizing a nested doubly linked list with a hash table to access elements by their keys.
 
