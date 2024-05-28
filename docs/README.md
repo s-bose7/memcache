@@ -18,14 +18,14 @@ Caches act as temporary holding areas for frequently used data, bridging the gap
 
 Cache eviction algorithms and TTL optimize cache usage by removing inactive data, ensuring crucial information is readily available for faster application execution. These algorithms prioritize active data within limited cache space, leading to significant performance improvements in various software systems.
 
-## Strategy and Overview
+## Strategy and Considerations
 Cache eviction policies vary widely (see [here](https://en.wikipedia.org/wiki/Cache_replacement_policies#Policies)). For this cache, we’re implementing LFRU (Least Frequently Recently Used), a hybrid of LFU (Least Frequently Used) and LRU (Least Recently Used).
 
+Implementing LFRU in real cache systems is complex due to cache partitioning into privileged and unprivileged sections. Popular content moves to the privileged section. When full, LFRU evicts from the unprivileged section, shifts content between partitions, and inserts new content into the privileged section. LRU manages the privileged partition, while an approximated LFU (ALFU) handles the unprivileged section.
+
+Our cache avoids multiple partitions. It’s designed to access the `Least-Frequent` and `Least-Recent` keys in O(1) time. If multiple `Least-Frequent` keys exist, we evict the `Least-Recent` one, ensuring efficiency.
+
 Before 2010, LFU policies used data structures like heaps and hash tables, resulting in O(log n) operations. These weren't scalable for modern needs, like internet proxy servers handling thousands of requests per second. As internet users grew from 1.97 billion in 2010 to 6 billion in 2024, efficient scalability became crucial. The linked [whitepaper](http://dhruvbird.com/lfu.pdf) introduces a strategy for O(1) LFU operations.
-
-Implementing LFRU is complex due to cache partitioning into privileged and unprivileged sections. Popular content moves to the privileged section. When full, LFRU evicts from the unprivileged section, shifts content between partitions, and inserts new content into the privileged section. LRU manages the privileged partition, while an approximated LFU (ALFU) handles the unprivileged section.
-
-Our cache avoids multiple partitions. It’s designed to access the least-frequent and least-recent keys in O(1) time. If multiple least-frequent keys exist, we evict the least-recent one, ensuring efficiency.
 
 ## Cache Replacement Algorithm Overview
 
