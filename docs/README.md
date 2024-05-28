@@ -7,7 +7,7 @@ Caches act as temporary holding areas for frequently used data, bridging the gap
 ![caching-network-proxy-application](https://github.com/s-bose7/LFU-Cache/assets/69990740/04fda769-ddf6-437a-8a6e-290652ee2db5)
 
 ## Features
-- [x] Trivial opeations of a cache i.e. put(key, value), get(key), remove(key).  
+- [x] Trivial opeations of a cache i.e. `put(key, value)`, `get(key)`, `remove(key)`.  
 - [x] Efficient cache replacement algotithm(s).  
 - [ ] Time-To-Live (TTL) for cache entries.
 - [ ] Support heterogeneous data types.
