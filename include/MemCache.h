@@ -1,5 +1,5 @@
-#ifndef LFUCACHE_H
-#define LFUCACHE_H
+#ifndef MEMCACHE_H
+#define MEMCACHE_H
 
 #include <unordered_map>
 #include "FrequencyNode.h"
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class LFUCache {
+class MemCache {
 
 private:
     /* Maximum size of the cache & a counter to track the size */
@@ -50,7 +50,7 @@ private:
 
 public:
     /* constructor */
-    LFUCache(int capacity);
+    MemCache(int capacity);
     /*
      * get(int key) Gets the value of the key 
      * if the key exists in the cache. Otherwise, returns -1.

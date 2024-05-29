@@ -1,17 +1,17 @@
-#include "../include/LFUCache.h"
+#include "../include/MemCache.h"
 #include "../include/FrequencyNode.h"
 #include "../include/MapItem.h"
 
 using namespace std;
 
-LFUCache::LFUCache(int capacity) {
+MemCache::MemCache(int capacity) {
     // Initialize LFU cache with given capacity
     this->MAX_SIZE = capacity;
     this->curr_size = 0;
     this->HEAD = new FrequencyNode();
 }
 
-int LFUCache::get(int key) {
+int MemCache::get(int key) {
     if (exists(key)){
         MapItem& map_item = bykey.at(key);
         update_the_frequency(key);
@@ -20,7 +20,7 @@ int LFUCache::get(int key) {
     return -1;
 }
 
-void LFUCache::update_the_frequency(int key){
+void MemCache::update_the_frequency(int key){
     MapItem& map_item = bykey.at(key);
     
     FrequencyNode *cur_freq = map_item.parent;
@@ -37,14 +37,14 @@ void LFUCache::update_the_frequency(int key){
     put_keynode_as_nodelist(new_freq, keynode_to_shift);
 }
 
-bool LFUCache::exists(int key) {
+bool MemCache::exists(int key) {
     if(bykey.count(key) == 0){
         return false;
     }
     return true;
 }
 
-void LFUCache::put(int key, int value) {
+void MemCache::put(int key, int value) {
     if(exists(key)){
         // Update the value of the key 
         bykey.at(key).value = value;
@@ -67,7 +67,7 @@ void LFUCache::put(int key, int value) {
 }
 
 
-void LFUCache::apply_eviction_policy() {
+void MemCache::apply_eviction_policy() {
     FrequencyNode *LFUNode = HEAD->next;
     if(LFUNode->local_keys_length == 1){
         // Invalidate LFU Key
@@ -87,7 +87,7 @@ void LFUCache::apply_eviction_policy() {
     --this->curr_size;
 }
 
-FrequencyNode* LFUCache::get_new_freq_node(int freq, FrequencyNode* prev, FrequencyNode* next) {
+FrequencyNode* MemCache::get_new_freq_node(int freq, FrequencyNode* prev, FrequencyNode* next) {
     FrequencyNode *new_freq_node = new FrequencyNode();
     new_freq_node->frequency = freq;
     new_freq_node->prev = prev;
@@ -103,7 +103,7 @@ FrequencyNode* LFUCache::get_new_freq_node(int freq, FrequencyNode* prev, Freque
 }
 
 
-void LFUCache::put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child) {
+void MemCache::put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child) {
     new_parent->local_keys_length++;
     if(!new_parent->mrukeynode && !new_parent->lrukeynode){
         new_parent->mrukeynode = new_parent->lrukeynode = child;
@@ -115,7 +115,7 @@ void LFUCache::put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child
 }
 
 
-void LFUCache::rmv_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child){
+void MemCache::rmv_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child){
     if(old_parent->local_keys_length == 1) {
         // If the current frequency has only one key, remove it and delete the frequency node
         old_parent->prev->next = old_parent->next;
@@ -138,6 +138,6 @@ void LFUCache::rmv_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child
 }
 
 
-bool LFUCache::delete_key(int key) {
+bool MemCache::delete_key(int key) {
     return false;
 }
