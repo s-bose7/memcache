@@ -1,6 +1,6 @@
-#include "../include/MemCache.h"
-#include "../include/FrequencyNode.h"
-#include "../include/MapItem.h"
+#include "FrequencyNode.h"
+#include "MapItem.h"
+#include "MemCache.h"
 
 using namespace std;
 
@@ -44,7 +44,7 @@ bool MemCache::exists(int key) {
     return true;
 }
 
-void MemCache::put(int key, int value) {
+void MemCache::put(int key, int value, int ttl=-1) {
     if(exists(key)){
         // Update the value of the key 
         bykey.at(key).value = value;
@@ -140,4 +140,7 @@ void MemCache::rmv_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child
 
 bool MemCache::delete_key(int key) {
     return false;
+}
+
+void MemCache::remove_expired_keys(){
 }
