@@ -12,6 +12,8 @@ Caches act as temporary holding areas for frequently used data, bridging the gap
 - [ ] Time-To-Live (TTL) for cache entries.
 - [ ] Support heterogeneous data types.
 - [ ] Cache resizing and dynamic capacity management.
+- [ ] Data is stored sorted by key.
+- [ ] Client can provide a custom comparison function to override the sort order.
 - [ ] Logging for cache performance analysis.
 - [ ] Benchmarking.
 - [ ] Data Compression and Serialization for keys to improve memory usage.
