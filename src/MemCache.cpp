@@ -1,6 +1,6 @@
-#include "FrequencyNode.h"
-#include "MapItem.h"
-#include "MemCache.h"
+#include "../include/FrequencyNode.h"
+#include "../include/MapItem.h"
+#include "../include/MemCache.h"
 
 using namespace std;
 
@@ -44,7 +44,7 @@ bool MemCache::exists(int key) {
     return true;
 }
 
-void MemCache::put(int key, int value, int ttl=-1) {
+void MemCache::put(int key, int value, int ttl) {
     if(exists(key)){
         // Update the value of the key 
         bykey.at(key).value = value;
