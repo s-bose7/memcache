@@ -1,9 +1,9 @@
-#include "../include/LFUCache.h"
+#include "../include/MemCache.h"
 
 #include <gtest/gtest.h>
 
 // Define test fixtures if needed
-class LFUCacheTest : public ::testing::Test {
+class MemCacheTest : public ::testing::Test {
 protected:
     // You can define common setup routines here
     virtual void SetUp() {
@@ -17,8 +17,8 @@ protected:
     
 };
 
-TEST_F(LFUCacheTest, InsertionAndRetrieval){
-    LFUCache cache{10};
+TEST_F(MemCacheTest, InsertionAndRetrieval){
+    MemCache cache{10};
     cache.put(1, 10);
     EXPECT_EQ(cache.get(1), 10);
 }
