@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(memcache LANGUAGE CXX)
+project(memcache LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -14,9 +14,9 @@ add_library(MemCache STATIC
     src/MapItem.cpp
 )
 # Add Google Test
-add_subdirectory(extern/googletest)
-include_directories(${gtest_SOURCE_DIR}/include ${gmock_SOURCE_DIR}/include)
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
 
 # Add test executable
 add_executable(runTests tests/test_memcache.cpp)
-target_link_libraries(runTests gtest gtest_main pthread MemCache)
+target_link_libraries(runTests ${GTEST_LIBRARIES} pthread MemCache)
