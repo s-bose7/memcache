@@ -12,8 +12,6 @@ Caches act as temporary holding areas for frequently used data, bridging the gap
 - [ ] Time-To-Live (TTL) for cache entries.
 - [ ] Support heterogeneous data types.
 - [ ] Cache resizing and dynamic capacity management.
-- [ ] Data is stored sorted by key.
-- [ ] Client can provide a custom comparison function to override the sort order.
 - [ ] Logging for cache performance analysis.
 - [ ] Benchmarking.
 - [ ] Data Compression and Serialization for keys to improve memory usage.
@@ -42,24 +40,3 @@ This approach offers efficient cache eviction with a constant time complexity, m
 
 ## Build Process
 
-### Step 1: Navigate to the Source Directory
-```bash
-$ cd /path/to/lfu-cache/src
-```
-### Step 2: Compile Source Files into Object Files
-```bash
-$ g++ -c KeyNode.cpp -o ../build/KeyNode.o
-$ g++ -c FrequencyNode.cpp -o ../build/FrequencyNode.o
-$ g++ -c MapItem.cpp -o ../build/MapItem.o
-$ g++ -c LFUCache.cpp -o ../build/LFUCache.o
-```
-
-### Step 3: Link Object Files to Create Executable Binary
-```bash
-$ g++ ../build/LFUCache.o ../build/KeyNode.o ../build/FrequencyNode.o ../build/MapItem.o -o ../build/lfu_cache
-```
-### Step 4: Run the Program
-```bash
-$ cd ../build
-$ ./lru_cache
-```
