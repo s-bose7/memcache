@@ -26,7 +26,7 @@ private:
     unordered_map<int, MapItem> bykey;    
 
     // Update the frequency of a particular key
-    void update_the_frequency(int key);
+    void update_frequency_of_the(int key);
     
     /*
      * EVICTION POLICY: 
@@ -48,7 +48,7 @@ private:
 
     // TTL support with a monotonic clock. 
     unordered_map<int, steady_clock::time_point> expiration;
-    void remove_expired_keys();
+    void apply_expiration_policy();
 
 public:
     /* constructor */
@@ -71,11 +71,17 @@ public:
     */
     bool exists(int key);
     /*
-     * delete_key(int key)
+     * remove(int key)
      * Delete a particular key from the cache.
      * returns true if key found && removed. Otherwise, returns false
     */
-    bool delete_key(int key);
+    bool remove(int key);
+
+    /* Clears the cache; Removes all the content.
+     * Beware of its usage. 
+    */
+    bool clear();
+
 };
 
 #endif
