@@ -1,10 +1,11 @@
 # memcache
 
 ## Introduction
+MemCache is a fast in-memory cache provides a mapping of arbitrary string keys to string values.
 
 Caches act as temporary holding areas for frequently used data, bridging the gap between main storage (e.g., hard drive, application database) and processing units (e.g., CPU) or clients (e.g., web browsers making requests to servers). They aim to speed up access to frequently needed information by storing it closer to the processing unit, where it can be accessed much faster. Caching occurs at multiple levels between client machines and servers to optimize resource delivery.
 
-![caching-network-proxy-application](https://github.com/s-bose7/LFU-Cache/assets/69990740/04fda769-ddf6-437a-8a6e-290652ee2db5)
+![caching-network-proxy-application](https://github.com/s-bose7/memcache/assets/69990740/04fda769-ddf6-437a-8a6e-290652ee2db5)
 
 ## Features
 - [x] Trivial opeations of a cache i.e. `put(key, value)`, `get(key)`, `remove(key)`.  
@@ -14,7 +15,8 @@ Caches act as temporary holding areas for frequently used data, bridging the gap
 - [ ] Cache resizing and dynamic capacity management.
 - [ ] Logging for cache performance analysis.
 - [ ] Benchmarking.
-- [ ] Data Compression and Serialization for keys to improve memory usage.
+- [ ] Automatic data compression to improve memory usage.
+- [ ] Data is stored sorted by key to provide an ordered mapping service. 
 
 Cache eviction algorithms and TTL optimize cache usage by removing inactive data, ensuring crucial information is readily available for faster application execution. These algorithms prioritize active data within limited cache space, leading to significant performance improvements in various software systems.
 
@@ -40,3 +42,35 @@ This approach offers efficient cache eviction with a constant time complexity, m
 
 ## Build Process
 
+#### Generate build files
+```bash
+$ mkdir -p build && cd build
+$ cmake ..
+```
+#### Compile the project
+```bash
+$ make     
+```
+#### Running tests
+Project compilation will generate test executables automatically.
+```bash
+$ ./runTests 
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MemCacheTest
+[ RUN      ] MemCacheTest.InsertionAndRetrieval
+[       OK ] MemCacheTest.InsertionAndRetrieval (0 ms)
+[----------] 1 test from MemCacheTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+$
+```
+
+## Getting the Source
+```bash
+$ git clone --recurse-submodules https://github.com/s-bose7/memcache.git
+```
+
+## Performance
