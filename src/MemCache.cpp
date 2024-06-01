@@ -5,7 +5,7 @@
 using namespace std;
 
 MemCache::MemCache(int capacity) {
-    // Initialize LFU cache with given capacity
+    // Initialize this cache with given capacity
     this->MAX_SIZE = capacity;
     this->curr_size = 0;
     this->HEAD = new FrequencyNode();
@@ -14,13 +14,13 @@ MemCache::MemCache(int capacity) {
 int MemCache::get(int key) {
     if (exists(key)){
         MapItem& map_item = bykey.at(key);
-        update_the_frequency(key);
+        update_frequency_of_the(key);
         return map_item.value;
     }
     return -1;
 }
 
-void MemCache::update_the_frequency(int key){
+void MemCache::update_frequency_of_the(int key){
     MapItem& map_item = bykey.at(key);
     
     FrequencyNode *cur_freq = map_item.parent;
@@ -49,7 +49,7 @@ void MemCache::put(int key, int value, int ttl) {
         // Update the value of the key 
         bykey.at(key).value = value;
         // Update the frequency of the key
-        update_the_frequency(key);
+        update_frequency_of_the(key);
         return;
     }
     if(this->curr_size == this->MAX_SIZE){
@@ -138,9 +138,22 @@ void MemCache::rmv_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child
 }
 
 
-bool MemCache::delete_key(int key) {
-    return false;
+bool MemCache::remove(int key) {
+    bool key_removal_status = false;
+    if(exists(key)){
+        MapItem& map_item = bykey.at(key);
+        rmv_keynode_as_nodelist(map_item.parent, map_item.node);
+        bykey.erase(key);
+        --this->curr_size;
+        key_removal_status = true;
+    }
+    return key_removal_status;
 }
 
-void MemCache::remove_expired_keys(){
+void MemCache::apply_expiration_policy(){
+}
+
+
+bool MemCache::clear(){
+    return false;
 }

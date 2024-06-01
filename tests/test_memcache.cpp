@@ -37,6 +37,7 @@ TEST_F(MemCacheTest, CheckLogicalAccuracy){
 }
 
 TEST_F(MemCacheTest, VerifyOperationRemove){
+    cache->put(4, 4);
     EXPECT_EQ(cache->remove(4), true);
 }
 
