@@ -67,6 +67,12 @@ $ ./runTests
 [  PASSED  ] 1 test.
 $
 ```
+To rerun the tests:
+```bash
+$ make clean && make 
+$ ./runTests
+```
+See [here](https://www.gnu.org/software/make/manual/make.html#How-Make-Works) for more on `make` commands.
 
 ## Getting the Source
 ```bash
