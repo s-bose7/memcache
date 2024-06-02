@@ -3,6 +3,8 @@
 
 #include <unordered_map>
 #include <chrono>
+#include <thread>
+#include <mutex>
 
 #include "FrequencyNode.h"
 #include "MapItem.h"
@@ -10,6 +12,7 @@
 using namespace std;
 using namespace std::chrono;
 
+// A mapping of key-value pairs with expiration and eviction polices
 class MemCache {
 
 private:
@@ -46,13 +49,20 @@ private:
     // Removes the key as child node from provided FreqencyNode
     void rmv_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child);
 
-    // TTL support with a monotonic clock. 
-    unordered_map<int, steady_clock::time_point> expiration;
+    // A separte thread based TTL support with a monotonic clock. 
+    unordered_map<int, steady_clock::time_point> expiration_map;
+    bool stop_t;
+    thread thread_ttl;
+    mutex cache_mutex;
+    void run_ttl_thread();
     void apply_expiration_policy();
 
 public:
-    /* constructor */
+    /* Constructor */
     MemCache(int capacity);
+    /* Destructor */
+    ~MemCache();
+
     /*
      * get(int key) Gets the value of the key 
      * if the key exists in the cache. Otherwise, returns -1.

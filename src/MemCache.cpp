@@ -2,14 +2,22 @@
 #include "../include/MapItem.h"
 #include "../include/MemCache.h"
 
-using namespace std;
 
 MemCache::MemCache(int capacity) {
     // Initialize this cache with given capacity
     this->MAX_SIZE = capacity;
     this->curr_size = 0;
     this->HEAD = new FrequencyNode();
+    this->thread_ttl = thread(&MemCache::run_ttl_thread, this);
 }
+
+
+MemCache::~MemCache(){
+    lock_guard<mutex> lock(cache_mutex);
+    this->stop_t = true;
+    this->thread_ttl.join();
+}
+
 
 int MemCache::get(int key) {
     if (exists(key)){
@@ -19,6 +27,7 @@ int MemCache::get(int key) {
     }
     return -1;
 }
+
 
 void MemCache::update_frequency_of_the(int key){
     MapItem& map_item = bykey.at(key);
@@ -37,6 +46,7 @@ void MemCache::update_frequency_of_the(int key){
     put_keynode_as_nodelist(new_freq, keynode_to_shift);
 }
 
+
 bool MemCache::exists(int key) {
     if(bykey.count(key) == 0){
         return false;
@@ -44,7 +54,11 @@ bool MemCache::exists(int key) {
     return true;
 }
 
+
 void MemCache::put(int key, int value, int ttl) {
+    if(ttl > 0){
+        expiration_map[key] = steady_clock::now() + chrono::seconds(ttl);
+    }
     if(exists(key)){
         // Update the value of the key 
         bykey.at(key).value = value;
@@ -86,6 +100,7 @@ void MemCache::apply_eviction_policy() {
     }
     --this->curr_size;
 }
+
 
 FrequencyNode* MemCache::get_new_freq_node(int freq, FrequencyNode* prev, FrequencyNode* next) {
     FrequencyNode *new_freq_node = new FrequencyNode();
@@ -150,7 +165,29 @@ bool MemCache::remove(int key) {
     return key_removal_status;
 }
 
+
+void MemCache::run_ttl_thread(){
+    int sleep_t = 10;
+    while(!stop_t) {
+        {
+            lock_guard<mutex> lock(cache_mutex);
+            apply_expiration_policy();
+        }
+        this_thread::sleep_for(chrono::seconds(sleep_t));
+    }
+}
+
+
 void MemCache::apply_expiration_policy(){
+    auto now = steady_clock::now();
+    for(auto iter=expiration_map.begin(); iter!=expiration_map.end();){
+        if(iter->second <= now){
+            remove(iter->first);
+            iter = expiration_map.erase(iter);
+        }else{
+            ++iter;
+        }
+    }
 }
 
 
