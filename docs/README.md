@@ -10,7 +10,7 @@ Caches act as temporary holding areas for frequently used data, bridging the gap
 ## Features
 - [x] Trivial opeations of a cache i.e. `put(key, value)`, `get(key)`, `remove(key)`.  
 - [x] Efficient cache replacement algotithm(s).  
-- [ ] Time-To-Live (TTL) for cache entries.
+- [x] Time-To-Live (TTL) for cache entries.
 - [ ] Support heterogeneous data types.
 - [ ] Cache resizing and dynamic capacity management.
 - [ ] Logging for cache performance analysis.
