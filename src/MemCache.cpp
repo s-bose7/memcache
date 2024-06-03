@@ -167,7 +167,7 @@ bool MemCache::remove(int key) {
 
 
 void MemCache::run_ttl_thread(){
-    int sleep_t = 10;
+    int sleep_t = 5;
     while(!stop_t) {
         {
             lock_guard<mutex> lock(cache_mutex);
