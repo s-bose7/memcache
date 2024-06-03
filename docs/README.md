@@ -33,7 +33,7 @@ Before 2010, LFU policies used data structures like heaps and hash tables, resul
 
 The constant O(1) runtime is achieved by utilizing a nested doubly linked list with a hash table to access elements by their keys.
 
-The doubly linked list is used to link together nodes representing a set of nodes that have the same access frequency (squares). This set of nodes with the same access frequency forms a doubly linked list of such nodes (circles). Each circular node has a pointer to its parent frequency node, so that later on we can access frequencies directly for our computation. An additional hashmap is used to store elements by key which maps to its parent node, its value and some other metadata dictates by implementation choices. The LFU key would be the circle associated with the left-most square, and LRU key would be the bottom-most circle associated with the left-most square.
+The doubly linked list is used to link together nodes representing a set of nodes that have the same access frequency (squares). This set of nodes with the same access frequency forms a doubly linked list of such nodes (circles). Each circular node has a pointer to its parent frequency node, so that later on we can access frequencies directly for our computation. An additional hashmap is used to store elements by key which maps to its parent node, its value and some other metadata dictates by implementation choices. The LFU key would be the left-most square, and LRU key would be the bottom-most circle associated with the left-most square.
 
 ![lfu-data-structure](https://github.com/s-bose7/LFU-Cache/assets/69990740/5fcca4d4-e89d-4be3-9300-8aae715959c3)
 
