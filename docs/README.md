@@ -13,10 +13,10 @@ Caches act as temporary holding areas for frequently used data, bridging the gap
 - [x] Time-To-Live (TTL) for cache entries.
 - [ ] Support heterogeneous data types.
 - [ ] Cache resizing and dynamic capacity management.
-- [ ] Logging for cache performance analysis.
-- [ ] Benchmarking.
+- [ ] Users can create a transient snapshot to get a consistent view of data.
 - [ ] Automatic data compression to improve memory usage.
 - [ ] Data is stored sorted by key to provide an ordered mapping service. 
+- [ ] Users can provide a custom comparison function to override the sort order.
 
 Cache eviction algorithms and TTL optimize cache usage by removing inactive data, ensuring crucial information is readily available for faster application execution. These algorithms prioritize active data within limited cache space, leading to significant performance improvements in various software systems.
 
