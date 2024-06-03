@@ -47,7 +47,7 @@ private:
     void put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child);
     
     // Removes the key as child node from provided FreqencyNode
-    void rmv_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child);
+    void remove_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child);
 
     // A separte thread based TTL support with a monotonic clock. 
     unordered_map<int, steady_clock::time_point> expiration_map;

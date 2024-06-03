@@ -42,7 +42,7 @@ void MemCache::update_frequency_of_the(int key){
     bykey.at(key).parent = new_freq;
 
     KeyNode *keynode_to_shift = map_item.node;
-    rmv_keynode_as_nodelist(cur_freq, keynode_to_shift);
+    remove_keynode_as_nodelist(cur_freq, keynode_to_shift);
     put_keynode_as_nodelist(new_freq, keynode_to_shift);
 }
 
@@ -130,24 +130,24 @@ void MemCache::put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child
 }
 
 
-void MemCache::rmv_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child){
-    if(old_parent->local_keys_length == 1) {
+void MemCache::remove_keynode_as_nodelist(FrequencyNode* parent, KeyNode* child){
+    if(parent->local_keys_length == 1) {
         // If the current frequency has only one key, remove it and delete the frequency node
-        old_parent->prev->next = old_parent->next;
-        old_parent->next->prev = old_parent->prev;
-        delete old_parent;
+        parent->prev->next = parent->next;
+        parent->next->prev = parent->prev;
+        delete parent;
 
     }else {
         // If the current frequency has more than one key, remove the key node from the current frequency
-        if (child == old_parent->mrukeynode) {
-            old_parent->mrukeynode = old_parent->mrukeynode->down;
-        } else if (child == old_parent->lrukeynode) {
-            old_parent->lrukeynode = old_parent->lrukeynode->up;
+        if (child == parent->mrukeynode) {
+            parent->mrukeynode = parent->mrukeynode->down;
+        } else if (child == parent->lrukeynode) {
+            parent->lrukeynode = parent->lrukeynode->up;
         } else {
             child->up->down = child->down;
             child->down->up = child->up;
         }
-        old_parent->local_keys_length--;
+        parent->local_keys_length--;
     }
     child->up = child->down = nullptr;
 }
@@ -157,7 +157,10 @@ bool MemCache::remove(int key) {
     bool key_removal_status = false;
     if(exists(key)){
         MapItem& map_item = bykey.at(key);
-        rmv_keynode_as_nodelist(map_item.parent, map_item.node);
+        remove_keynode_as_nodelist(
+            map_item.parent, 
+            map_item.node
+        );
         bykey.erase(key);
         --this->curr_size;
         key_removal_status = true;
@@ -192,5 +195,11 @@ void MemCache::apply_expiration_policy(){
 
 
 bool MemCache::clear(){
-    return false;
+    std::lock_guard<std::mutex> lock(mutex);
+    // Redifne everything
+    HEAD = new FrequencyNode(); 
+    curr_size = 0;
+    bykey.clear();
+    expiration_map.clear();
+    return true;
 }
