@@ -1,6 +1,6 @@
-#include "../include/FrequencyNode.h"
-#include "../include/MapItem.h"
-#include "../include/MemCache.h"
+#include "../include/frequency_node.h"
+#include "../include/map_item.h"
+#include "../include/mem_cache.h"
 #include "../utils/memory_info.h"
 
 

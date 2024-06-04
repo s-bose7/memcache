@@ -2,7 +2,7 @@
 #define FREQUENCYNODE_H
 
 #include <unordered_map>
-#include "KeyNode.h"
+#include "key_node.h"
 
 class FrequencyNode {
 public:

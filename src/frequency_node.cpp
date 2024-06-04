@@ -1,4 +1,4 @@
-#include "../include/FrequencyNode.h"
+#include "../include/frequency_node.h"
 
 
 // Constructor definition for FrequencyNode

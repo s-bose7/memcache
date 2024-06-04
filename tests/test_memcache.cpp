@@ -1,8 +1,7 @@
-#include "../include/MemCache.h"
-
 #include <chrono>
 #include <gtest/gtest.h>
 
+#include "../include/mem_cache.h"
 
 // Define test fixtures if needed
 class MemCacheTest : public ::testing::Test {
@@ -20,6 +19,11 @@ protected:
         delete cache;
     }
     
+};
+
+struct CacheParameter {
+    int size;
+    string name_f;
 };
 
 TEST_F(MemCacheTest, VerifyTTLFunction){

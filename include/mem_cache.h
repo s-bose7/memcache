@@ -7,8 +7,8 @@
 #include <mutex>
 #include <iostream>
 
-#include "FrequencyNode.h"
-#include "MapItem.h"
+#include "map_item.h"
+#include "frequency_node.h"
 
 using namespace std;
 using namespace std::chrono;

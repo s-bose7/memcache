@@ -1,8 +1,8 @@
 #ifndef MAPITEM_H
 #define MAPITEM_H
 
-#include "KeyNode.h"
-#include "FrequencyNode.h"
+#include "key_node.h"
+#include "frequency_node.h"
 
 class MapItem {
 public:

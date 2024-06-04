@@ -1,22 +1,20 @@
 #ifndef MEMORY_INFO_H
 #define MEMORY_INFO_H
 
-using namespace std;
-
 #ifdef _WIN32
 #include <windows.h>
-
 size_t get_available_memory() {
     MEMORYSTATUSEX status;
     status.dwLength = sizeof(status);
     GlobalMemoryStatusEx(&status);
     return status.ullAvailPhys;
 }
-
 #else
 #include <fstream>
 #include <string>
 #include <sstream>
+
+using namespace std;
 
 size_t get_available_memory() {
     ifstream meminfo("/proc/meminfo");
