@@ -36,14 +36,18 @@ void MemCache::update_frequency_of_the(int key){
     FrequencyNode *new_freq = cur_freq->next;
 
     if(new_freq->frequency != cur_freq->frequency + 1){
-        new_freq = get_new_freq_node(cur_freq->frequency + 1, cur_freq, new_freq);
+        new_freq = get_new_frequency_node(
+            cur_freq->frequency + 1, 
+            cur_freq, 
+            new_freq
+        );
     }
 
     bykey.at(key).parent = new_freq;
 
     KeyNode *keynode_to_shift = map_item.node;
-    remove_keynode_as_nodelist(cur_freq, keynode_to_shift);
-    put_keynode_as_nodelist(new_freq, keynode_to_shift);
+    remove_keynode_from_frequencynode(cur_freq, keynode_to_shift);
+    put_keynode_in_frequencynode(new_freq, keynode_to_shift);
 }
 
 
@@ -71,10 +75,10 @@ void MemCache::put(int key, int value, int ttl) {
     }
     FrequencyNode *freq_node = HEAD->next;
     if(freq_node->frequency != 1){
-        freq_node = get_new_freq_node(1, HEAD, freq_node);
+        freq_node = get_new_frequency_node(1, HEAD, freq_node);
     }
     KeyNode *key_node = new KeyNode(key);
-    put_keynode_as_nodelist(freq_node, key_node);
+    put_keynode_in_frequencynode(freq_node, key_node);
     // Put a new entry into the Hash Table
     bykey.insert(make_pair(key, MapItem(value, freq_node, key_node)));
     ++this->curr_size;
@@ -82,31 +86,38 @@ void MemCache::put(int key, int value, int ttl) {
 
 
 void MemCache::apply_eviction_policy() {
+    
+    int remove_key;
     FrequencyNode *LFUNode = HEAD->next;
-    if(LFUNode->local_keys_length == 1){
-        // Invalidate LFU Key
-        HEAD->next = LFUNode->next;
-        LFUNode->next->prev = HEAD;
-        bykey.erase(LFUNode->lrukeynode->key);
-        delete LFUNode;
+    
+    KeyNode* MRUNode = LFUNode->mrukeynode; 
+    KeyNode* LRUNode = LFUNode->lrukeynode;
+    KeyNode* node_to_remove = nullptr;
 
+    if(LFUNode->local_keys_length > 1){
+        remove_key = LRUNode->key;
     }else{
-        // Invalidate LRU Key
-        KeyNode* LRUNode = LFUNode->lrukeynode;
-        LFUNode->lrukeynode = LFUNode->lrukeynode->up;
-        bykey.erase(LRUNode->key);
-        delete LRUNode;
-        LFUNode->local_keys_length--;
+        remove_key = MRUNode->key; 
     }
-    --this->curr_size;
+    lock_guard<mutex> lock(cache_mutex);
+    remove(remove_key);
+    if(expiration_map.count(remove_key) > 0){
+        // If not already removed by expiration_thread
+        expiration_map.erase(remove_key);
+    }
 }
 
 
-FrequencyNode* MemCache::get_new_freq_node(int freq, FrequencyNode* prev, FrequencyNode* next) {
+FrequencyNode* MemCache::get_new_frequency_node(
+    int freq, 
+    FrequencyNode* prev, 
+    FrequencyNode* next
+) {
     FrequencyNode *new_freq_node = new FrequencyNode();
     new_freq_node->frequency = freq;
     new_freq_node->prev = prev;
     prev->next = new_freq_node;
+    
     if(prev == next){
         new_freq_node->next = new_freq_node;
     }else{
@@ -118,7 +129,10 @@ FrequencyNode* MemCache::get_new_freq_node(int freq, FrequencyNode* prev, Freque
 }
 
 
-void MemCache::put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child) {
+void MemCache::put_keynode_in_frequencynode(
+    FrequencyNode* new_parent, 
+    KeyNode* child
+) {
     new_parent->local_keys_length++;
     if(!new_parent->mrukeynode && !new_parent->lrukeynode){
         new_parent->mrukeynode = new_parent->lrukeynode = child;
@@ -130,15 +144,20 @@ void MemCache::put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child
 }
 
 
-void MemCache::remove_keynode_as_nodelist(FrequencyNode* parent, KeyNode* child){
+void MemCache::remove_keynode_from_frequencynode(
+    FrequencyNode* parent, 
+    KeyNode* child
+){
     if(parent->local_keys_length == 1) {
-        // If the current frequency has only one key, remove it and delete the frequency node
+        // If the current frequency has only one key: 
+        // Remove it and delete the frequency node
         parent->prev->next = parent->next;
         parent->next->prev = parent->prev;
         delete parent;
 
-    }else {
-        // If the current frequency has more than one key, remove the key node from the current frequency
+    }else{
+        // If the current frequency has more than one key: 
+        // Remove the key node from the current frequency.
         if (child == parent->mrukeynode) {
             parent->mrukeynode = parent->mrukeynode->down;
         } else if (child == parent->lrukeynode) {
@@ -157,7 +176,7 @@ bool MemCache::remove(int key) {
     bool key_removal_status = false;
     if(exists(key)){
         MapItem& map_item = bykey.at(key);
-        remove_keynode_as_nodelist(
+        remove_keynode_from_frequencynode(
             map_item.parent, 
             map_item.node
         );
