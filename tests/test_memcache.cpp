@@ -60,6 +60,8 @@ TEST_F(MemCacheTest, VerifyOperationRemove){
 
 TEST_F(MemCacheTest, VeryfyClearOperation){
     cache = new MemCache(10);
+    // Putting like this to notify the fact that 
+    // This is the only for loop that the cache has :D
     for(int k=0; k<10; k++) {
         int val = k+2;
         if(k>0 && k%2 == 0){
@@ -74,6 +76,20 @@ TEST_F(MemCacheTest, VeryfyClearOperation){
     EXPECT_EQ(cache->get(2), -1);
     EXPECT_EQ(cache->get(6), -1);
     EXPECT_EQ(cache->get(8), -1);
+}
+
+
+TEST_F(MemCacheTest, VerifyResizeOperation){
+    cache = new MemCache(4);
+    cache->put(1, 4);
+    cache->put(2, 3);
+    cache->put(3, 2);
+    cache->put(4, 1);
+    EXPECT_EQ(cache->get(3), 2);
+    EXPECT_EQ(cache->get(4), 1);
+    cache->resize(2);
+    EXPECT_EQ(cache->get(1), -1);
+    EXPECT_EQ(cache->get(2), -1);
 }
 
 int main(int argc, char **argv) {
