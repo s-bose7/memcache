@@ -5,6 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+#include <iostream>
 
 #include "FrequencyNode.h"
 #include "MapItem.h"
@@ -96,7 +97,7 @@ public:
      * resize(int new_capacity)
      * Resize the cache 
     */
-    void resize(int new_capacity);
+    void resize(size_t new_capacity);
 
 };
 

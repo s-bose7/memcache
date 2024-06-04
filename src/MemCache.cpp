@@ -1,6 +1,7 @@
 #include "../include/FrequencyNode.h"
 #include "../include/MapItem.h"
 #include "../include/MemCache.h"
+#include "../utils/memory_info.h"
 
 
 MemCache::MemCache(int capacity) {
@@ -224,7 +225,17 @@ bool MemCache::clear(){
 }
 
 
-void MemCache::resize(int new_capacity) {
+void MemCache::resize(size_t new_capacity) {
+    
+    size_t available_ram = get_available_memory();
+    cout<<available_ram<<endl;
+    size_t required_ram = available_ram * sizeof(MapItem);
+    cout<<required_ram<<endl;
+    if(required_ram > available_ram){
+        cerr << "Error: Not enough memory for capacity " << new_capacity << endl;
+        return;
+    }
+
     MAX_SIZE = new_capacity;
     while(curr_size > MAX_SIZE){
         apply_eviction_policy();
