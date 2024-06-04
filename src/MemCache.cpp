@@ -222,3 +222,11 @@ bool MemCache::clear(){
     expiration_map.clear();
     return true;
 }
+
+
+void MemCache::resize(int new_capacity) {
+    MAX_SIZE = new_capacity;
+    while(curr_size > MAX_SIZE){
+        apply_eviction_policy();
+    }
+}

@@ -40,14 +40,14 @@ private:
     void apply_eviction_policy();
     
     // Returns a FrequencyNode with provided frequency 
-    FrequencyNode* get_new_freq_node(int freq, FrequencyNode* perv, FrequencyNode* next);
+    FrequencyNode* get_new_frequency_node(int freq, FrequencyNode* perv, FrequencyNode* next);
     
     // Insets a key as a child of a FrequencyNode
-    // Inserted key will be the Most Recently Used (MRU) key of the cache.
-    void put_keynode_as_nodelist(FrequencyNode* new_parent, KeyNode* child);
+    // Inserted key will be the Most Recently Used (MRU) key of that frequency.
+    void put_keynode_in_frequencynode(FrequencyNode* new_parent, KeyNode* child);
     
     // Removes the key as child node from provided FreqencyNode
-    void remove_keynode_as_nodelist(FrequencyNode* old_parent, KeyNode* child);
+    void remove_keynode_from_frequencynode(FrequencyNode* parent, KeyNode* child);
 
     // A separte thread based TTL support with a monotonic clock. 
     unordered_map<int, steady_clock::time_point> expiration_map;
@@ -91,6 +91,12 @@ public:
      * Beware of its usage. 
     */
     bool clear();
+
+    /*
+     * resize(int new_capacity)
+     * Resize the cache 
+    */
+    void resize(int new_capacity);
 
 };
 
