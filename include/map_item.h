@@ -4,17 +4,18 @@
 #include "key_node.h"
 #include "frequency_node.h"
 
+template<typename K, typename V>
 class MapItem {
 public:
-    /* int value: holds the value for a particular key */
-    int value;
+    /* V value: holds the value for a particular key */
+    V value;
     /* FrequencyNode* parent: pointer to the parent frequency node */
-    FrequencyNode *parent;
+    FrequencyNode<K>* parent;
     /* KeyNode *node: pointer to the node that holds the key under parent */
-    KeyNode *node;
+    KeyNode<K>* node;
     /* constructor */
     // MapItem(); 
-    MapItem(int value, FrequencyNode *parent, KeyNode *node);
+    MapItem(V value, FrequencyNode<K> *parent, KeyNode<K> *node);
 };
-
+#include "../src/map_item.cpp"
 #endif

@@ -12,7 +12,7 @@ Caches act as temporary holding areas for frequently used data, bridging the gap
 - [ ] All cache operations are atomic. 
 - [x] Efficient cache replacement algotithm(s).  
 - [x] Time-To-Live (TTL) for cache entries.
-- [ ] Support heterogeneous data types.
+- [x] Support heterogeneous data types.
 - [x] Cache resizing and dynamic capacity management.
 - [ ] Users can create a transient snapshot to get a consistent view of data.
 - [ ] Automatic data compression to improve memory usage.

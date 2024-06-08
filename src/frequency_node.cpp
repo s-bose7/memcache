@@ -1,8 +1,11 @@
+#ifndef FREQUENCYNODE_CPP
+#define FREQUENCYNODE_CPP
+
 #include "../include/frequency_node.h"
 
-
 // Constructor definition for FrequencyNode
-FrequencyNode::FrequencyNode() : frequency(0), local_keys_length(0),
+template<typename K>
+FrequencyNode<K>::FrequencyNode() : frequency(0), local_keys_length(0),
                                 prev(nullptr),
                                 next(this), // Always points to itself initialiy
                                 mrukeynode(nullptr),
@@ -10,3 +13,4 @@ FrequencyNode::FrequencyNode() : frequency(0), local_keys_length(0),
     // Initialize the FrequencyNode object with default values
 }
 
+#endif
