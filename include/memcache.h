@@ -37,7 +37,7 @@ private:
     FrequencyNode<KeyNode<K>> *HEAD;
     
     // To store elements by key, maps to MapsItem 
-    unordered_map<K, MapItem<K, V, KeyNode<K>>> bykey;    
+    unordered_map<K, MapItem<KeyNode<K>, V>> bykey;    
 
     // Update the frequency of a particular key
     void update_frequency_of_the(K key);

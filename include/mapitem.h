@@ -1,10 +1,9 @@
 #ifndef MAPITEM_H
 #define MAPITEM_H
 
-#include "keynode.h"
 #include "frequencynode.h"
 
-template<typename K, typename V, typename T>
+template<typename T, typename V>
 class MapItem {
 public:
     /* V value: holds the value for a particular key */
@@ -12,10 +11,10 @@ public:
     /* FrequencyNode* parent: pointer to the parent frequency node */
     FrequencyNode<T>* parent;
     /* KeyNode *node: pointer to the node that holds the key under parent */
-    KeyNode<K>* node;
+    T* node;
     /* constructor */
     // MapItem(); 
-    MapItem(V value, FrequencyNode<T> *parent, KeyNode<K> *node);
+    MapItem(V value, FrequencyNode<T> *parent, T *node);
 };
 #include "../src/mapitem.cpp"
 #endif

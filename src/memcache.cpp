@@ -25,7 +25,7 @@ MemCache<K, V>::~MemCache(){
 template<typename K, typename V>
 K MemCache<K, V>::get(K key) {
     if (exists(key)){
-        MapItem<K, V, KeyNode<K>> map_item = bykey.at(key);
+        MapItem<KeyNode<K>, V> map_item = bykey.at(key);
         update_frequency_of_the(key);
         return map_item.value;
     }
@@ -35,7 +35,7 @@ K MemCache<K, V>::get(K key) {
 
 template<typename K, typename V>
 void MemCache<K, V>::update_frequency_of_the(K key){
-    MapItem<K, V, KeyNode<K>> map_item = bykey.at(key);
+    MapItem<KeyNode<K>, V> map_item = bykey.at(key);
     
     FrequencyNode<KeyNode<K>> *cur_freq = map_item.parent;
     FrequencyNode<KeyNode<K>> *new_freq = cur_freq->next;
@@ -87,7 +87,7 @@ void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
     KeyNode<K> *key_node = new KeyNode<K>(key);
     put_keynode_in_frequencynode(freq_node, key_node);
     // Put a new entry into the Hash Table
-    bykey.insert(make_pair(key, MapItem<K, V, KeyNode<K>>(value, freq_node, key_node)));
+    bykey.insert(make_pair(key, MapItem<KeyNode<K>, V>(value, freq_node, key_node)));
     ++this->curr_size;
 }
 
@@ -187,7 +187,7 @@ template<typename K, typename V>
 bool MemCache<K, V>::remove(K key) {
     bool key_removal_status = false;
     if(exists(key)){
-        MapItem<K, V, KeyNode<K>> map_item = bykey.at(key);
+        MapItem<KeyNode<K>, V> map_item = bykey.at(key);
         remove_keynode_from_frequencynode(
             map_item.parent, 
             map_item.node
@@ -244,7 +244,7 @@ void MemCache<K, V>::resize(size_t new_capacity) {
     
     size_t available_ram = get_available_memory();
     cout<<available_ram<<endl;
-    size_t required_ram = available_ram * sizeof(MapItem<K, V, KeyNode<K>>);
+    size_t required_ram = available_ram * sizeof(K);
     cout<<required_ram<<endl;
     if(required_ram > available_ram){
         cerr << "Error: Not enough memory for capacity " << new_capacity << endl;
