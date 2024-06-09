@@ -1,7 +1,7 @@
 #include <chrono>
 #include <gtest/gtest.h>
 
-#include "../include/mem_cache.h"
+#include "../include/memcache.h"
 
 // Define test fixtures if needed
 class MemCacheTest : public ::testing::Test {

@@ -1,7 +1,7 @@
 #ifndef KEYNODE_CPP
 #define KEYNODE_CPP
 
-#include "../include/key_node.h"
+#include "../include/keynode.h"
 
 // Constructor definition for KeyNode
 template<typename K>

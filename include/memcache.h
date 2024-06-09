@@ -8,11 +8,13 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include <iostream>
+#include <algorithm>
 
-#include "map_item.h"
-#include "key_node.h"
-#include "frequency_node.h"
+#include "mapitem.h"
+#include "keynode.h"
+#include "frequencynode.h"
 
 #include "../utils/memory_info.h"
 
@@ -32,10 +34,10 @@ private:
      *  Head of the Frequency List
      *  HEAD.next will always be the Least Frequently Used Node 
     */
-    FrequencyNode<K> *HEAD;
+    FrequencyNode<KeyNode<K>> *HEAD;
     
     // To store elements by key, maps to MapsItem 
-    unordered_map<K, MapItem<K, V>> bykey;    
+    unordered_map<K, MapItem<K, V, KeyNode<K>>> bykey;    
 
     // Update the frequency of a particular key
     void update_frequency_of_the(K key);
@@ -49,22 +51,22 @@ private:
     void apply_eviction_policy();
     
     // Returns a FrequencyNode with provided frequency 
-    FrequencyNode<K>* get_new_frequency_node(
+    FrequencyNode<KeyNode<K>>* get_new_frequency_node(
         int freq, 
-        FrequencyNode<K>* prev, 
-        FrequencyNode<K>* next
+        FrequencyNode<KeyNode<K>>* prev, 
+        FrequencyNode<KeyNode<K>>* next
     );
     
     // Insets a key as a child of a FrequencyNode
     // Inserted key will be the Most Recently Used (MRU) key of that frequency.
     void put_keynode_in_frequencynode(
-        FrequencyNode<K>* new_parent, 
+        FrequencyNode<KeyNode<K>>* new_parent, 
         KeyNode<K>* child
     );
     
     // Removes the key as child node from provided FreqencyNode
     void remove_keynode_from_frequencynode(
-        FrequencyNode<K>* parent, 
+        FrequencyNode<KeyNode<K>>* parent, 
         KeyNode<K>* child
     );
 
@@ -118,5 +120,7 @@ public:
     void resize(size_t new_capacity);
 
 };
-#include "../src/mem_cache.cpp"
+
+
+#include "../src/memcache.cpp"
 #endif

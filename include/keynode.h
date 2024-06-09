@@ -17,5 +17,5 @@ public:
     KeyNode(K key);
 };
 
-#include "../src/key_node.cpp"
+#include "../src/keynode.cpp"
 #endif

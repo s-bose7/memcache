@@ -1,9 +1,9 @@
 #ifndef FREQUENCYNODE_H
 #define FREQUENCYNODE_H
 
-#include "../include/key_node.h"
+#include "../include/keynode.h"
 
-template<typename K>
+template<typename T>
 class FrequencyNode {
 public:
     /*
@@ -16,16 +16,16 @@ public:
      * FrequencyNode *prev: Previous pointer of this node
      * FrequencyNode *next: Next pointer of this node
     */
-    FrequencyNode<K> *prev, *next;
+    FrequencyNode<T> *prev, *next;
     /*
      * KeyNode *mrukeynode: Most  Recently Used key node pointer  
      * KeyNode *lrukeynode: Least Recently Used key node pointer
     */
-    KeyNode<K> *mrukeynode, *lrukeynode;
+    T *mrukeynode, *lrukeynode;
     
     /* constructor */
     FrequencyNode();
 };
 
-#include "../src/frequency_node.cpp"
+#include "../src/frequencynode.cpp"
 #endif
