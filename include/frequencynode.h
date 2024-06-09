@@ -6,24 +6,23 @@
 template<typename T>
 class FrequencyNode {
 public:
-    /*
-     * int frequency: Access frequency of the node
-     * int local_keys_length: Number of key nodes associated with this frequency node
-    */
-    int frequency, local_keys_length;
-    /*
-     * As this is a doubly-linked-list it must have prev and next pointer 
-     * FrequencyNode *prev: Previous pointer of this node
-     * FrequencyNode *next: Next pointer of this node
-    */
-    FrequencyNode<T> *prev, *next;
-    /*
-     * KeyNode *mrukeynode: Most  Recently Used key node pointer  
-     * KeyNode *lrukeynode: Least Recently Used key node pointer
-    */
-    T *mrukeynode, *lrukeynode;
+
+    // int frequency: Access frequency of the node
+    int frequency; 
+    // int num_keys_local: Number of KeyNode associated with this FrequencyNode
+    int num_keys_local; 
+
+    // FrequencyNode<T> *prev: Previous pointer of this node
+    FrequencyNode<T> *prev; 
+    // FrequencyNode<T> *next: Next pointer of this node
+    FrequencyNode<T> *next; 
+
+    //  T *keynode_mru: Most Recently Used KeyNode pointer  
+    T *keynode_mru;
+    // T *keynode_lru: Least Recently Used KeyNode pointer  
+    T *keynode_lru;
     
-    /* constructor */
+    // Constructor
     FrequencyNode();
 };
 

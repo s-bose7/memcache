@@ -27,8 +27,10 @@ template<typename K, typename V>
 class MemCache {
 
 private:
-    /* Maximum size of the cache & a counter to track the size */
-    int MAX_SIZE, curr_size; 
+    // Maximum size of the cache.
+    int MAX_SIZE;
+    // Counter to track the cache size.
+    int curr_size; 
     
     /*  
      *  Head of the Frequency List
@@ -36,7 +38,7 @@ private:
     */
     FrequencyNode<KeyNode<K>> *HEAD;
     
-    // To store elements by key, maps to MapsItem 
+    // To store elements by key, Key to MapItem 
     unordered_map<K, MapItem<KeyNode<K>, V>> bykey;    
 
     // Update the frequency of a particular key
@@ -70,7 +72,7 @@ private:
         KeyNode<K>* child
     );
 
-    // A separte thread based TTL support with a monotonic clock. 
+    // Background Job: A separte thread based TTL support with a monotonic clock. 
     unordered_map<K, steady_clock::time_point> expiration_map;
     bool stop_t;
     thread thread_ttl;
@@ -79,9 +81,10 @@ private:
     void apply_expiration_policy();
 
 public:
-    /* Constructor */
+
+    // Constructor
     MemCache(int capacity);
-    /* Destructor */
+    // Destructor
     ~MemCache();
 
     /*
@@ -89,34 +92,32 @@ public:
      * if the key exists in the cache. Otherwise, returns -1.
     */
     K get(K key);
+
     /*
      * put(int key, int value, int ttl = -1) 
      * Update the value of the key if present, or inserts the key if not already present. 
      * When the cache reaches its capacity, apply eviction policy before inserting a new item.
     */
     void put(K key, V value, unsigned long ttl = 0);
+
     /*
-     * exists(int key)
-     * Check for existence of a particular key
+     * exists(int key): Check for existence of a particular key.
      * returns true if found. Otherwise, returns false
     */
     bool exists(K key);
+
     /*
-     * remove(int key)
-     * Delete a particular key from the cache.
-     * returns true if key found && removed. Otherwise, returns false
+     * remove(int key): Delete a particular key from the cache.
+     * Returns true if key found and removed. Otherwise, returns false
     */
     bool remove(K key);
 
-    /* Clears the cache; Removes all the content.
-     * Beware of its usage. 
+    /* bool clear(): Clears the cache; Removes all the content.
+     * Use with caution. 
     */
     bool clear();
 
-    /*
-     * resize(int new_capacity)
-     * Resize the cache 
-    */
+    // resize(int new_capacity): Resize the cache. 
     void resize(size_t new_capacity);
 
 };

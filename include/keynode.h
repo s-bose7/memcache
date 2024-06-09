@@ -4,16 +4,17 @@
 template<typename K>
 class KeyNode {
 public:
-    /* int key: holds the key */
+    
     K key;
 
-    /* By analogy the keyNodes should connected verticaly with the FrequencyNodes 
-     *
-     * KeyNode *up: pointer to the upper keyNode 
-     * KeyNode *down: pointer to the lower keyNode 
-    */
-    KeyNode<K> *up, *down;
-    /* constructor */
+    // By analogy a keyNode should connected verticaly with it's parent FrequencyNode.
+     
+    // KeyNode *up: pointer to the upper keyNode
+    KeyNode<K> *up;
+    // KeyNode *down: pointer to the lower keyNode 
+    KeyNode<K> *down;
+
+    // Constructor 
     KeyNode(K key);
 };
 
