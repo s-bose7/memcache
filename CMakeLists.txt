@@ -9,10 +9,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 include_directories(include)
 include_directories(${CMAKE_SOURCE_DIR}/utils)
 add_library(MemCache STATIC
-    src/mem_cache.cpp
-    src/frequency_node.cpp
-    src/key_node.cpp
-    src/map_item.cpp
+    src/memcache.cpp
+    src/frequencynode.cpp
+    src/keynode.cpp
+    src/mapitem.cpp
 )
 # Add Google Test
 find_package(GTest REQUIRED)
