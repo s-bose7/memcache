@@ -98,11 +98,11 @@ void MemCache<K, V>::apply_eviction_policy() {
     int remove_key;
     FrequencyNode<KeyNode<K>> *LFUNode = HEAD->next;
     
-    KeyNode<K>* MRUNode = LFUNode->mrukeynode; 
-    KeyNode<K>* LRUNode = LFUNode->lrukeynode;
+    KeyNode<K>* MRUNode = LFUNode->keynode_mru; 
+    KeyNode<K>* LRUNode = LFUNode->keynode_lru;
     KeyNode<K>* node_to_remove = nullptr;
 
-    if(LFUNode->local_keys_length > 1){
+    if(LFUNode->num_keys_local > 1){
         remove_key = LRUNode->key;
     }else{
         remove_key = MRUNode->key; 
@@ -143,13 +143,13 @@ void MemCache<K, V>::put_keynode_in_frequencynode(
     FrequencyNode<KeyNode<K>>* new_parent, 
     KeyNode<K>* child
 ) {
-    new_parent->local_keys_length++;
-    if(!new_parent->mrukeynode && !new_parent->lrukeynode){
-        new_parent->mrukeynode = new_parent->lrukeynode = child;
+    new_parent->num_keys_local++;
+    if(!new_parent->keynode_mru && !new_parent->keynode_lru){
+        new_parent->keynode_mru = new_parent->keynode_lru = child;
     }else{
-        child->down = new_parent->mrukeynode;
-        new_parent->mrukeynode->up = child;
-        new_parent->mrukeynode = child;
+        child->down = new_parent->keynode_mru;
+        new_parent->keynode_mru->up = child;
+        new_parent->keynode_mru = child;
     }
 }
 
@@ -159,7 +159,7 @@ void MemCache<K, V>::remove_keynode_from_frequencynode(
     FrequencyNode<KeyNode<K>>* parent, 
     KeyNode<K>* child
 ){
-    if(parent->local_keys_length == 1) {
+    if(parent->num_keys_local == 1) {
         // If the current frequency has only one key: 
         // Remove it and delete the frequency node
         parent->prev->next = parent->next;
@@ -169,15 +169,15 @@ void MemCache<K, V>::remove_keynode_from_frequencynode(
     }else{
         // If the current frequency has more than one key: 
         // Remove the key node from the current frequency.
-        if (child == parent->mrukeynode) {
-            parent->mrukeynode = parent->mrukeynode->down;
-        } else if (child == parent->lrukeynode) {
-            parent->lrukeynode = parent->lrukeynode->up;
+        if (child == parent->keynode_mru) {
+            parent->keynode_mru = parent->keynode_mru->down;
+        } else if (child == parent->keynode_lru) {
+            parent->keynode_lru = parent->keynode_lru->up;
         } else {
             child->up->down = child->down;
             child->down->up = child->up;
         }
-        parent->local_keys_length--;
+        parent->num_keys_local--;
     }
     child->up = child->down = nullptr;
 }

@@ -5,11 +5,11 @@
 
 // Constructor definition for FrequencyNode
 template<typename T>
-FrequencyNode<T>::FrequencyNode() : frequency(0), local_keys_length(0),
+FrequencyNode<T>::FrequencyNode() : frequency(0), num_keys_local(0),
                                 prev(nullptr),
                                 next(this), // Always points to itself initialiy
-                                mrukeynode(nullptr),
-                                lrukeynode(nullptr) {
+                                keynode_mru(nullptr),
+                                keynode_lru(nullptr) {
     // Initialize the FrequencyNode object with default values
 }
 
