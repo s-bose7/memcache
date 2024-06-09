@@ -1,11 +1,13 @@
 # memcache
 
 ## Introduction
-MemCache is a fast in-memory cache provides a mapping of arbitrary string keys to string values.
+MemCache is a fast in-memory cache which provides a mapping of arbitrary keys to values.
 
 Caches act as temporary holding areas for frequently used data, bridging the gap between main storage (e.g., hard drive, application database) and processing units (e.g., CPU) or clients (e.g., web browsers making requests to servers). They aim to speed up access to frequently needed information by storing it closer to the processing unit, where it can be accessed much faster. Caching occurs at multiple levels between client machines and servers to optimize resource delivery.
 
 ![caching-network-proxy-application](https://github.com/s-bose7/memcache/assets/69990740/04fda769-ddf6-437a-8a6e-290652ee2db5)
+
+Author: Sudip Bose([sbose007ime.work@gmail.com](mailto:sbose007ime.work@gmail.com))
 
 ## Features
 - [x] Trivial opeations of a cache i.e. `put(key, value)`, `get(key)`, `remove(key)`. 
