@@ -44,7 +44,7 @@ private:
     // Update the frequency of a particular key
     void update_frequency_of_the(K key);
 
-    // Get base memory requirement to store on KV pair.
+    // Get base memory requirement to store one KV pair.
     size_t get_base_required_memory();
     
     /*
