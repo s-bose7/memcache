@@ -95,7 +95,7 @@ void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
 template<typename K, typename V>
 void MemCache<K, V>::apply_eviction_policy() {
     
-    int remove_key;
+    K remove_key;
     FrequencyNode<KeyNode<K>> *LFUNode = HEAD->next;
     
     KeyNode<K>* MRUNode = LFUNode->keynode_mru; 
@@ -107,6 +107,7 @@ void MemCache<K, V>::apply_eviction_policy() {
     }else{
         remove_key = MRUNode->key; 
     }
+    
     lock_guard<mutex> lock(cache_mutex);
     remove(remove_key);
     if(expiration_map.count(remove_key) > 0){
@@ -237,22 +238,30 @@ bool MemCache<K, V>::clear(){
     expiration_map.clear();
     return true;
 }
+    
+
+template<typename K, typename V>
+size_t MemCache<K, V>::get_base_required_memory(){
+    return 1;
+}
 
 
 template<typename K, typename V>
 void MemCache<K, V>::resize(size_t new_capacity) {
     
+    size_t meta_factor = 1001;
     size_t available_ram = get_available_memory();
-    cout<<available_ram<<endl;
-    size_t required_ram = available_ram * sizeof(K);
-    cout<<required_ram<<endl;
-    if(required_ram > available_ram){
+    size_t required_ram =  get_base_required_memory() * new_capacity;
+    
+    if(required_ram > available_ram + meta_factor){
         cerr << "Error: Not enough memory for capacity " << new_capacity << endl;
         return;
     }
 
     MAX_SIZE = new_capacity;
-    while(curr_size > MAX_SIZE){
+    // If shrinking needed, invalidate LFRU keys.
+    while(curr_size > MAX_SIZE)
+    {
         apply_eviction_policy();
     }
 }
