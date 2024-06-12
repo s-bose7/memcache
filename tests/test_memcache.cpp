@@ -75,13 +75,16 @@ TEST_F(MemCacheTest, VeryfyClearOperation){
 TEST_F(MemCacheTest, VerifyResizeOperation){
     cache.put(1, 4);
     cache.put(2, 3);
+    cache.resize(4);
     cache.put(3, 2);
     cache.put(4, 1);
     EXPECT_EQ(cache.get(3), 2);
     EXPECT_EQ(cache.get(4), 1);
-    cache.resize(4);
-    EXPECT_EQ(cache.get(1), -1);
-    EXPECT_EQ(cache.get(2), -1);
+    EXPECT_EQ(cache.get(1), 4);
+    EXPECT_EQ(cache.get(2), 3);
+    cache.resize(2);
+    EXPECT_EQ(cache.get(3), -1);
+    EXPECT_EQ(cache.get(4), -1);
 }
 
 int main(int argc, char **argv) {
