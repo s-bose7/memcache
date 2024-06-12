@@ -30,7 +30,7 @@ size_t get_available_memory() {
         if (iss >> key >> value >> unit) {
             if (key == "MemAvailable:") {
                 // Convert from KB to bytes
-                available_memory = value; 
+                available_memory = value * 1024; 
                 break;
             }
         }

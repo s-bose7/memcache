@@ -243,7 +243,7 @@ bool MemCache<K, V>::clear(){
     
 
 template<typename K, typename V>
-size_t MemCache<K, V>::get_base_required_memory(size_t capacity){
+size_t MemCache<K, V>::get_base_required_memory(size_t capacity) noexcept {
     
     size_t ptr_s = sizeof(void*);
     size_t keynode_s = sizeof(K) + 2*ptr_s; 
@@ -254,7 +254,7 @@ size_t MemCache<K, V>::get_base_required_memory(size_t capacity){
 
     // Base size of 1 KV entry in the cache
     size_t base_size = sizeof(K) + map_s + keynode_s + mapitem_s;
-    
+
     // FrequencyNode may or maynot get created for every cache entry
     // Accounting for memory where frequencyNode get created around 50% of the capacity
     return ((capacity * (base_size + frequencynode_s)) + ((capacity / 2) * frequencynode_s));
@@ -267,7 +267,6 @@ void MemCache<K, V>::resize(size_t new_capacity) {
     size_t meta_factor = 1024;
     size_t available_ram = get_available_memory();
     size_t required_ram =  get_base_required_memory(new_capacity);
-    
     if(required_ram > available_ram + meta_factor){
         cerr << "Error: Not enough memory for capacity " << new_capacity << endl;
         return;
