@@ -28,7 +28,7 @@ struct CacheParameter {
 TEST_F(MemCacheTest, VerifyTTLFunction){
     unsigned int ttl = 2;
     cache.put(22, 2147483640, ttl);
-    this_thread::sleep_for(chrono::seconds(ttl*3));
+    this_thread::sleep_for(chrono::seconds(4));
     EXPECT_EQ(cache.get(22), -1);
     EXPECT_EQ(cache.exists(22), false);
 }
