@@ -11,6 +11,7 @@
 #include <atomic>
 #include <iostream>
 #include <algorithm>
+#include <climits>
 
 #include "mapitem.h"
 #include "keynode.h"
@@ -28,9 +29,9 @@ class MemCache {
 
 private:
     // Maximum size of the cache.
-    int MAX_SIZE;
+    unsigned int MAX_SIZE;
     // Counter to track the cache size.
-    int curr_size; 
+    unsigned int curr_size; 
     
     /*  
      *  Head of the Frequency List
@@ -114,6 +115,9 @@ public:
      * returns true if found. Otherwise, returns false
     */
     bool exists(K key);
+
+    // returns the current size of the cache.
+    unsigned int size();
 
     /*
      * remove(int key): Delete a particular key from the cache.

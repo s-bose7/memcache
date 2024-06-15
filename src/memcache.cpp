@@ -2,7 +2,7 @@
 #define MEM_CACHE_CPP
 
 #include "../include/memcache.h"
-#include <climits>
+
 
 template<typename K, typename V>
 MemCache<K, V>::MemCache(int capacity) {
@@ -62,6 +62,13 @@ template<typename K, typename V>
 bool MemCache<K, V>::exists(K key) {
     lock_guard<mutex> lock(cache_mutex);
     return bykey.count(key) > 0;
+}
+
+
+template<typename K, typename V>
+unsigned int MemCache<K, V>::size(){
+    lock_guard<mutex> lock(cache_mutex);
+    return curr_size;
 }
 
 
