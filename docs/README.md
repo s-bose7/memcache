@@ -11,7 +11,7 @@ Author: Sudip Bose([sbose007ime.work@gmail.com](mailto:sbose007ime.work@gmail.co
 
 ## Features
 - [x] Trivial opeations of a cache i.e. `put(key, value)`, `get(key)`, `remove(key)`. 
-- [ ] All cache operations are atomic. 
+- [x] All cache operations are atomic. 
 - [x] Efficient cache replacement algotithm(s).  
 - [x] Time-To-Live (TTL) for cache entries.
 - [x] Support heterogeneous data types.

@@ -10,7 +10,7 @@ MemCache<K, V>::MemCache(int capacity) {
     this->MAX_SIZE = capacity;
     this->curr_size = 0;
     this->HEAD = new FrequencyNode<KeyNode<K>>();
-    this->thread_ttl = thread(&MemCache::run_ttl_thread, this);
+    this->thread_ttl = thread(&MemCache<K, V>::run_ttl_thread, this);
 }
 
 
@@ -24,7 +24,9 @@ MemCache<K, V>::~MemCache(){
 
 template<typename K, typename V>
 K MemCache<K, V>::get(K key) {
-    if (exists(key)){
+    lock_guard<mutex> lock(cache_mutex);
+
+    if (bykey.count(key) > 0){
         MapItem<KeyNode<K>, V> map_item = bykey.at(key);
         update_frequency_of_the(key);
         return map_item.value;
@@ -58,19 +60,19 @@ void MemCache<K, V>::update_frequency_of_the(K key){
 
 template<typename K, typename V>
 bool MemCache<K, V>::exists(K key) {
-    if(bykey.count(key) == 0){
-        return false;
-    }
-    return true;
+    lock_guard<mutex> lock(cache_mutex);
+    return bykey.count(key) > 0;
 }
 
 
 template<typename K, typename V>
 void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
+    lock_guard<mutex> lock(cache_mutex);
+
     if(ttl > 0){
         expiration_map[key] = steady_clock::now() + chrono::seconds(ttl);
     }
-    if(exists(key)) {
+    if(bykey.count(key) > 0) {
         // Cache miss
         // Update the value of the key 
         bykey.at(key).value = value;
@@ -109,13 +111,7 @@ void MemCache<K, V>::apply_eviction_policy() {
     }else{
         remove_key = MRUNode->key; 
     }
-    
-    lock_guard<mutex> lock(cache_mutex);
-    remove(remove_key);
-    if(expiration_map.count(remove_key) > 0){
-        // If not already removed by expiration_thread
-        expiration_map.erase(remove_key);
-    }
+    remove(bykey.at(remove_key));
 }
 
 
@@ -187,16 +183,25 @@ void MemCache<K, V>::remove_keynode_from_frequencynode(
 
 
 template<typename K, typename V>
+void MemCache<K, V>::remove(MapItem<KeyNode<K>, V> item){
+    // Seems redundant at first glance, but nessearly to avoid recursive locking.
+    K key = item.node->key;
+    remove_keynode_from_frequencynode(item.parent, item.node);
+    bykey.erase(key);
+    curr_size -= 1;
+}
+
+
+template<typename K, typename V>
 bool MemCache<K, V>::remove(K key) {
+    lock_guard<mutex> lock(cache_mutex);
+    
     bool key_removal_status = false;
-    if(exists(key)){
+    if(bykey.count(key) > 0){
         MapItem<KeyNode<K>, V> map_item = bykey.at(key);
-        remove_keynode_from_frequencynode(
-            map_item.parent, 
-            map_item.node
-        );
+        remove_keynode_from_frequencynode(map_item.parent, map_item.node);
         bykey.erase(key);
-        --this->curr_size;
+        curr_size -= 1;
         key_removal_status = true;
     }
     return key_removal_status;
@@ -205,7 +210,7 @@ bool MemCache<K, V>::remove(K key) {
 
 template<typename K, typename V>
 void MemCache<K, V>::run_ttl_thread(){
-    int sleep_t = 5;
+    int sleep_t = 1;
     while(!stop_t) {
         {
             lock_guard<mutex> lock(cache_mutex);
@@ -219,11 +224,17 @@ void MemCache<K, V>::run_ttl_thread(){
 template<typename K, typename V>
 void MemCache<K, V>::apply_expiration_policy(){
     auto now = steady_clock::now();
-    for(auto iter=expiration_map.begin(); iter!=expiration_map.end();){
-        if(iter->second <= now){
-            remove(iter->first);
+    for(auto iter=expiration_map.begin(); iter!=expiration_map.end(); ){
+        if(iter->second <= now) {
+            if(bykey.count(iter->first) > 0) {
+                remove(bykey.at(iter->first));
+            } else {
+                // Key already removed by eviction policy or the client;
+                // Do nothing
+            }
             iter = expiration_map.erase(iter);
-        }else{
+        } else {
+            // Increment the iter
             ++iter;
         }
     }
@@ -232,7 +243,8 @@ void MemCache<K, V>::apply_expiration_policy(){
 
 template<typename K, typename V>
 bool MemCache<K, V>::clear(){
-    std::lock_guard<std::mutex> lock(mutex);
+    lock_guard<mutex> lock(cache_mutex);
+
     // Redifne everything
     HEAD = new FrequencyNode<KeyNode<K>>(); 
     curr_size = 0;
@@ -256,7 +268,7 @@ size_t MemCache<K, V>::get_base_required_memory(size_t capacity) noexcept {
     size_t base_size = sizeof(K) + map_s + keynode_s + mapitem_s;
 
     // FrequencyNode may or maynot get created for every cache entry
-    // Accounting for memory where frequencyNode get created around 50% of the capacity
+    // Accounting for memory where frequencyNode get created around 50% of the cache entriesthe
     return ((capacity * (base_size + frequencynode_s)) + ((capacity / 2) * frequencynode_s));
 }
 

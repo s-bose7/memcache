@@ -19,7 +19,7 @@
 #include "../utils/memory_info.h"
 
 using namespace std;
-using namespace std::chrono;
+using namespace chrono;
 
 
 // A mapping of key-value pairs with expiration and eviction polices
@@ -45,7 +45,7 @@ private:
     void update_frequency_of_the(K key);
 
     // Get base required memory for cache size capacity.
-    size_t get_base_required_memory(size_t capacity);
+    size_t get_base_required_memory(size_t capacity) noexcept;
     
     /*
      * EVICTION POLICY: 
@@ -75,11 +75,17 @@ private:
         KeyNode<K>* child
     );
 
+    // Cache mutex 
+    mutex cache_mutex;
+
+    // An overloaded remove.
+    // To avoid recursive locks, deadlocks etc.
+    void remove(MapItem<KeyNode<K>, V> item);
+
     // Background Job: A separte thread based TTL support with a monotonic clock. 
     unordered_map<K, steady_clock::time_point> expiration_map;
     bool stop_t;
     thread thread_ttl;
-    mutex cache_mutex;
     void run_ttl_thread();
     void apply_expiration_policy();
 
