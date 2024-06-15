@@ -2,7 +2,7 @@
 #define MEM_CACHE_CPP
 
 #include "../include/memcache.h"
-
+#include <climits>
 
 template<typename K, typename V>
 MemCache<K, V>::MemCache(int capacity) {
@@ -69,9 +69,10 @@ template<typename K, typename V>
 void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
     lock_guard<mutex> lock(cache_mutex);
 
-    if(ttl > 0){
-        expiration_map[key] = steady_clock::now() + chrono::seconds(ttl);
+    if(ttl < 0){
+        ttl = INT_MAX; // Default ttl value
     }
+    expiration_map[key] = steady_clock::now() + chrono::seconds(ttl);
     if(bykey.count(key) > 0) {
         // Cache miss
         // Update the value of the key 
