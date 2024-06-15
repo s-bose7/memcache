@@ -3,7 +3,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
-size_t get_available_memory() {
+size_t static get_available_memory() {
     MEMORYSTATUSEX status;
     status.dwLength = sizeof(status);
     GlobalMemoryStatusEx(&status);
@@ -16,7 +16,7 @@ size_t get_available_memory() {
 
 using namespace std;
 
-size_t get_available_memory() {
+size_t static get_available_memory() {
     ifstream meminfo("/proc/meminfo");
     string line;
     size_t available_memory = 0;
