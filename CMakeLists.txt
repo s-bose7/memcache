@@ -7,17 +7,22 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add source and header files
 include_directories(include)
-include_directories(${CMAKE_SOURCE_DIR}/utils)
+# include_directories(${CMAKE_SOURCE_DIR}/utils)
 add_library(MemCache STATIC
     src/memcache.cpp
     src/frequencynode.cpp
     src/keynode.cpp
     src/mapitem.cpp
+    utils/memory_info.h
 )
 # Add Google Test
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 # Add test executable
-add_executable(run_tests tests/test_memcache.cpp)
+add_executable(run_tests 
+    tests/test_memcache.cpp 
+    tests/test_thread_safety.cpp
+    tests/test_atomicity.cpp
+)
 target_link_libraries(run_tests ${GTEST_LIBRARIES} pthread MemCache)
