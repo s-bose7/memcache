@@ -83,3 +83,42 @@ $ git clone --recurse-submodules https://github.com/s-bose7/memcache.git
 ```
 
 ## Performance
+Here is a performance report from the run of the included cache_benchmark program. The report gives a ballpark performance estimation.
+
+### Setup
+We use a cache size of 10^5, with a million entries. Each entry has a 16 byte key, and a 100 byte value.
+
+```bash
+memcache:	version 1.1 (Latest)
+Date:		Sun Jun 16 21:35:16 2024
+CPU:		Intel(R) Core(TM) i3-6006U CPU @ 2.00GHz
+RAM:		2 GB (Available)
+Keys:		16 bytes each
+Values:		100 bytes each
+Entries:	1000000
+Cache Size:	1000000
+Raw Size:	~206.90 MB
+
+```
+
+### Write Performance
+
+```bash
+writeseq: 	    3.37372  micros/op; (approximately 296408 writes per second)
+writerandom: 	
+overwrite:   	2.23422 micros/op;
+```
+
+### Read Performance
+```bash
+readseq: 	1.71238 micors/op; (approxmimately 583981 reads per seocnd)
+readrandom: 	
+```
+
+## Limitations
+- No persistancy to disk.
+- A single process (possibly multi-threaded) can access the cache at a time.
+- Callers cannot query data based on parameters i.e. time, max, min etc.
+- Not distributed, subsequently no horizontal scaling.
+- No client-server support, applications that needs such support will have to   
+  wrap their own server around the library.
