@@ -4,9 +4,6 @@
 # PATCH
 - Demonstration of cache workings
 
-# PATCH
-- Benchmarking
-
 # MINOR
 - Language constructs: cpp using best practices
 
