@@ -1,14 +1,12 @@
 #ifndef MEMCACHE_H
 #define MEMCACHE_H
 
-#include <vector>
 #include <map>
 #include <set>
 #include <unordered_map>
 #include <chrono>
 #include <thread>
 #include <mutex>
-#include <atomic>
 #include <iostream>
 #include <algorithm>
 #include <climits>
