@@ -104,7 +104,7 @@ Raw Size:	~206.90 MB
 ### Write Performance
 
 ```bash
-writeseq: 	    3.37372  micros/op; (approximately 296408 writes per second)
+writeseq: 	3.37372  micros/op; (approximately 296408 writes per second)
 writerandom: 	
 overwrite:   	2.23422 micros/op;
 ```
