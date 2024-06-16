@@ -29,7 +29,7 @@ TEST_F(MemCacheTest, VerifyTTLFunction){
     unsigned int ttl = 2;
     cache.put(22, 2147483640, ttl);
     this_thread::sleep_for(chrono::seconds(4));
-    EXPECT_EQ(cache.get(22), -1);
+    EXPECT_EQ(cache.get(22), 0);
     EXPECT_EQ(cache.exists(22), false);
 }
 
@@ -39,10 +39,10 @@ TEST_F(MemCacheTest, CheckLogicalAccuracy){
     cache.put(2, 2);
     EXPECT_EQ(cache.get(1), 1);
     cache.put(3, 3);
-    EXPECT_EQ(cache.get(2), -1);
+    EXPECT_EQ(cache.get(2), 0);
     EXPECT_EQ(cache.get(3), 3);
     cache.put(4, 4);
-    EXPECT_EQ(cache.get(1), -1);
+    EXPECT_EQ(cache.get(1), 0);
     EXPECT_EQ(cache.get(3), 3);
     EXPECT_EQ(cache.get(4), 4);
 }
@@ -64,11 +64,11 @@ TEST_F(MemCacheTest, VeryfyClearOperation){
     EXPECT_EQ(cache.get(2), 3);
     EXPECT_EQ(cache.get(6), 7);
     cache.put(8, 9);
-    EXPECT_EQ(cache.get(2), -1);
+    EXPECT_EQ(cache.get(2), 0);
     EXPECT_EQ(cache.get(8), 9);
     cache.clear();
-    EXPECT_EQ(cache.get(8), -1);
-    EXPECT_EQ(cache.get(6), -1);
+    EXPECT_EQ(cache.get(8), 0);
+    EXPECT_EQ(cache.get(6), 0);
 }
 
 
@@ -83,8 +83,8 @@ TEST_F(MemCacheTest, VerifyResizeOperation){
     EXPECT_EQ(cache.get(1), 4);
     EXPECT_EQ(cache.get(2), 3);
     cache.resize(2);
-    EXPECT_EQ(cache.get(3), -1);
-    EXPECT_EQ(cache.get(4), -1);
+    EXPECT_EQ(cache.get(3), 0);
+    EXPECT_EQ(cache.get(4), 0);
 }
 
 int main(int argc, char **argv) {

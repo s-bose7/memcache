@@ -31,7 +31,7 @@ K MemCache<K, V>::get(K key) {
         update_frequency_of_the(key);
         return map_item.value;
     }
-    return -1;
+    return V();
 }
 
 

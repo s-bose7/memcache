@@ -12,6 +12,7 @@
 #include <iostream>
 #include <algorithm>
 #include <climits>
+#include <string>
 
 #include "mapitem.h"
 #include "keynode.h"
@@ -31,8 +32,8 @@ private:
     // Maximum size of the cache.
     unsigned int MAX_SIZE;
     // Counter to track the cache size.
-    unsigned int curr_size; 
-    
+    unsigned int curr_size;
+
     /*  
      *  Head of the Frequency List
      *  HEAD.next will always be the Least Frequently Used Node 
@@ -77,7 +78,7 @@ private:
     );
 
     // Cache mutex 
-    mutex cache_mutex;
+    mutable mutex cache_mutex;
 
     // An overloaded remove.
     // To avoid recursive locks, deadlocks etc.
@@ -99,7 +100,7 @@ public:
 
     /*
      * get(int key) Gets the value of the key 
-     * if the key exists in the cache. Otherwise, returns -1.
+     * if the key exists in the cache. Otherwise, returns default value of V.
     */
     K get(K key);
 
