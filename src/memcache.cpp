@@ -76,7 +76,7 @@ template<typename K, typename V>
 void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
     lock_guard<mutex> lock(cache_mutex);
 
-    if(ttl < 0){
+    if(ttl < 1){
         ttl = INT_MAX; // Default ttl value
     }
     expiration_map[key] = steady_clock::now() + chrono::seconds(ttl);
