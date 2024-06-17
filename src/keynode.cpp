@@ -5,8 +5,9 @@
 
 // Constructor definition for KeyNode
 template<typename K>
-KeyNode<K>::KeyNode(K key) 
+KeyNode<K>::KeyNode(K key,  FrequencyNode<KeyNode<K>> *parent) 
     : key(key),
+      parent(parent),
       up(nullptr),
       down(nullptr) {
     // Initialize the KeyNode object with the provided key

@@ -39,7 +39,7 @@ template<typename K, typename V>
 void MemCache<K, V>::update_frequency_of_the(K key){
     MapItem<KeyNode<K>, V> map_item = bykey.at(key);
     
-    FrequencyNode<KeyNode<K>> *cur_freq = map_item.parent;
+    FrequencyNode<KeyNode<K>> *cur_freq = map_item.node->parent;
     FrequencyNode<KeyNode<K>> *new_freq = cur_freq->next;
 
     if(new_freq->frequency != cur_freq->frequency + 1){
@@ -50,7 +50,7 @@ void MemCache<K, V>::update_frequency_of_the(K key){
         );
     }
 
-    bykey.at(key).parent = new_freq;
+    bykey.at(key).node->parent = new_freq;
 
     KeyNode<K> *keynode_to_shift = map_item.node;
     remove_keynode_from_frequencynode(cur_freq, keynode_to_shift);
@@ -96,10 +96,10 @@ void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
     if(freq_node->frequency != 1){
         freq_node = get_new_frequency_node(1, HEAD, freq_node);
     }
-    KeyNode<K> *key_node = new KeyNode<K>(key);
+    KeyNode<K> *key_node = new KeyNode<K>(key, freq_node);
     put_keynode_in_frequencynode(freq_node, key_node);
     // Put a new entry into the Hash Table
-    bykey.insert(make_pair(key, MapItem<KeyNode<K>, V>(value, freq_node, key_node)));
+    bykey.insert(make_pair(key, MapItem<KeyNode<K>, V>(value, key_node)));
     ++this->curr_size;
 }
 
@@ -194,7 +194,7 @@ template<typename K, typename V>
 void MemCache<K, V>::remove(MapItem<KeyNode<K>, V> item){
     // Seems redundant at first glance, but nessearly to avoid recursive locking.
     K key = item.node->key;
-    remove_keynode_from_frequencynode(item.parent, item.node);
+    remove_keynode_from_frequencynode(item.node->parent, item.node);
     bykey.erase(key);
     curr_size -= 1;
 }
@@ -207,7 +207,7 @@ bool MemCache<K, V>::remove(K key) {
     bool key_removal_status = false;
     if(bykey.count(key) > 0){
         MapItem<KeyNode<K>, V> map_item = bykey.at(key);
-        remove_keynode_from_frequencynode(map_item.parent, map_item.node);
+        remove_keynode_from_frequencynode(map_item.node->parent, map_item.node);
         bykey.erase(key);
         curr_size -= 1;
         key_removal_status = true;
