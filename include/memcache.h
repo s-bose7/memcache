@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <climits>
 #include <string>
+#include <snappy.h>
 
 #include "mapitem.h"
 #include "keynode.h"

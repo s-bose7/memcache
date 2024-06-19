@@ -15,6 +15,12 @@ add_library(MemCache STATIC
     src/mapitem.cpp
     utils/memory_info.h
 )
+
+# Add Snappy
+find_package(Snappy REQUIRED)
+include_directories(${SNAPPY_INCLUDE_DIRS})
+target_link_libraries(MemCache ${SNAPPY_LIBRARIES})
+
 # Add Google Test
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
