@@ -1,7 +1,4 @@
 # PATCH
-- Add GitHub workflows
-
-# PATCH
 - Demonstration of cache workings
 
 # MINOR
