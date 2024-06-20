@@ -1,0 +1,33 @@
+name: CMake Continuous Integration
+
+on:
+  push:
+    branches: 
+      - 'main'
+  pull_request:
+    branches: 
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        submodules: true  # This ensures that the googletest submodule is also checked out
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsnappy-dev
+
+    - name: Configure CMake
+      run: mkdir build && cd build && cmake -DUSE_SUBMODULE_GTEST=ON ..
+
+    - name: Build
+      run: cd build && make
+
+    - name: Run tests
+      run: cd build && ./run_tests 

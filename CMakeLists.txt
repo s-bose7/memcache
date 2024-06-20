@@ -21,9 +21,23 @@ find_package(Snappy REQUIRED)
 include_directories(${SNAPPY_INCLUDE_DIRS})
 target_link_libraries(MemCache ${SNAPPY_LIBRARIES})
 
+
+# Option to use submodule for googletest
+option(USE_SUBMODULE_GTEST "Use googletest from submodule" OFF)
+
 # Add Google Test
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
+if(USE_SUBMODULE_GTEST)
+    # Use googletest from submodule
+    add_subdirectory(extern/googletest)
+    include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+    target_link_libraries(MemCache gtest gtest_main)
+    
+else()
+    # Use system-installed googletest
+    find_package(GTest REQUIRED)
+    include_directories(${GTEST_INCLUDE_DIRS})
+
+endif()
 
 # Add test executable
 add_executable(run_tests 
@@ -31,4 +45,4 @@ add_executable(run_tests
     tests/test_thread_safety.cpp
     tests/test_atomicity.cpp
 )
-target_link_libraries(run_tests ${GTEST_LIBRARIES} pthread MemCache)
+target_link_libraries(run_tests gtest gtest_main pthread MemCache)
