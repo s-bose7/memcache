@@ -8,11 +8,12 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ build_ps.os }}
 
     strategy:
       fail-fast: false
-      matrix:
+
+      build_ps:
         os: [ubuntu-latest]
         build_type: [Release]
         c_compiler: [gcc]
@@ -49,13 +50,13 @@ jobs:
       - name: Configure CMake
         run: |
           cmake -B ${{ steps.strings.outputs.build-output-dir }} \
-                -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
-                -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
-                -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+                -DCMAKE_CXX_COMPILER=${{ build_ps.cpp_compiler }} \
+                -DCMAKE_C_COMPILER=${{ build_ps.c_compiler }} \
+                -DCMAKE_BUILD_TYPE=${{ build_ps.build_type }} \
                 -S ${{ github.workspace }}
 
       - name: Build
-        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ build_ps.build_type }}
 
       - name: Run Tests
         run: cd ${{ steps.strings.outputs.build-output-dir }} && ctest
