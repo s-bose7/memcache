@@ -18,13 +18,36 @@ jobs:
       with:
         submodules: true  # This ensures that the googletest submodule is also checked out
 
-    - name: Install dependencies
+    - name: Install snappy dependencies if not cached
+      if: steps.cache-snappy.outputs.cache-hit != 'true'
       run: |
         sudo apt-get update
         sudo apt-get install -y libsnappy-dev
+  
+    - name: Cache snappy dependencies
+      id: cache-snappy
+      uses: actions/cache@v2
+      with:
+        path: /usr/local/snappy
+        key: ${{ runner.os }}-snappy-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-snappy-
+
+    - name: Cache CMake build
+      uses: actions/cache@v2
+      with:
+        path: build
+        key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-cmake-
+
+    - name: Prepare build directory
+      run: |
+        if [ -d build ]; then rm -rf build; fi
+        mkdir build
 
     - name: Configure CMake
-      run: mkdir build && cd build && cmake -DUSE_SUBMODULE_GTEST=ON ..
+      run: cd build && cmake -DUSE_SUBMODULE_GTEST=ON ..
 
     - name: Build
       run: cd build && make
