@@ -10,10 +10,6 @@
 # MINOR 
 - Snapshot creation
 
-# MINOR 
-- Data compression
-- Data serialization?
-
 # MAJOR
 - Supporting multiple eviction policies
 - Custom eviction policis using comparison func

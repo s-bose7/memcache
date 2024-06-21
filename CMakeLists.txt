@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add source and header files
 include_directories(include)
-# include_directories(${CMAKE_SOURCE_DIR}/utils)
 add_library(MemCache STATIC
     src/memcache.cpp
     src/frequencynode.cpp
@@ -17,10 +16,10 @@ add_library(MemCache STATIC
 )
 
 # Add Snappy
-find_package(Snappy REQUIRED)
-include_directories(${SNAPPY_INCLUDE_DIRS})
+set(SNAPPY_INCLUDE_DIRS "/usr/include")
+set(SNAPPY_LIBRARIES "/usr/lib/x86_64-linux-gnu/libsnappy.so")
 target_link_libraries(MemCache ${SNAPPY_LIBRARIES})
-
+target_sources(MemCache PRIVATE utils/compression.h)
 
 # Option to use submodule for googletest
 option(USE_SUBMODULE_GTEST "Use googletest from submodule" OFF)
@@ -44,5 +43,11 @@ add_executable(run_tests
     tests/test_memcache.cpp 
     tests/test_thread_safety.cpp
     tests/test_atomicity.cpp
+    tests/test_snapshot.cpp
 )
-target_link_libraries(run_tests gtest gtest_main pthread MemCache)
+
+if(USE_SUBMODULE_GTEST)
+    target_link_libraries(run_tests gtest gtest_main pthread MemCache ${SNAPPY_LIBRARIES})
+else()
+    target_link_libraries(run_tests ${GTEST_LIBRARIES} pthread MemCache ${SNAPPY_LIBRARIES})
+endif()

@@ -7,17 +7,18 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include <iostream>
 #include <algorithm>
 #include <climits>
 #include <string>
-#include <snappy.h>
 
-#include "mapitem.h"
-#include "keynode.h"
-#include "frequencynode.h"
+#include "../include/mapitem.h"
+#include "../include/keynode.h"
+#include "../include/frequencynode.h"
 
 #include "../utils/memory_info.h"
+#include "../utils/compression.h"
 
 using namespace std;
 using namespace chrono;
@@ -40,7 +41,7 @@ private:
     FrequencyNode<KeyNode<K>> *HEAD;
     
     // To store elements by key, Key to MapItem 
-    unordered_map<K, MapItem<KeyNode<K>, V>> bykey;    
+    unordered_map<K, MapItem<KeyNode<K>, string>> bykey;    
 
     // Update the frequency of a particular key
     void update_frequency_of_the(K key);
@@ -81,7 +82,7 @@ private:
 
     // An overloaded remove.
     // To avoid recursive locks, deadlocks etc.
-    void remove(MapItem<KeyNode<K>, V> item);
+    void remove(MapItem<KeyNode<K>, string> item);
 
     // Background Job: A separte thread based TTL support with a monotonic clock. 
     unordered_map<K, steady_clock::time_point> expiration_map;
@@ -101,7 +102,7 @@ public:
      * get(int key) Gets the value of the key 
      * if the key exists in the cache. Otherwise, returns default value of V.
     */
-    K get(K key);
+    V get(K key);
 
     /*
      * put(int key, int value, int ttl = -1) 

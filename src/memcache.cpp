@@ -23,13 +23,16 @@ MemCache<K, V>::~MemCache(){
 
 
 template<typename K, typename V>
-K MemCache<K, V>::get(K key) {
+V MemCache<K, V>::get(K key) {
     lock_guard<mutex> lock(cache_mutex);
 
     if (bykey.count(key) > 0){
-        MapItem<KeyNode<K>, V> map_item = bykey.at(key);
+        MapItem<KeyNode<K>, string> map_item = bykey.at(key);
         update_frequency_of_the(key);
-        return map_item.value;
+        // Return after decompressing the value
+        return Compressor::deserialize<V>(
+            Compressor::uncompress(map_item.value), std::is_arithmetic<V>{}
+        ); 
     }
     return V();
 }
@@ -37,7 +40,7 @@ K MemCache<K, V>::get(K key) {
 
 template<typename K, typename V>
 void MemCache<K, V>::update_frequency_of_the(K key){
-    MapItem<KeyNode<K>, V> map_item = bykey.at(key);
+    MapItem<KeyNode<K>, string> map_item = bykey.at(key);
     
     FrequencyNode<KeyNode<K>> *cur_freq = map_item.node->parent;
     FrequencyNode<KeyNode<K>> *new_freq = cur_freq->next;
@@ -79,17 +82,19 @@ void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
     if(ttl < 1){
         ttl = INT_MAX; // Default ttl value
     }
+    // Compress value
+    string compressed_val = Compressor::compress(
+        Compressor::serialize(value, std::is_arithmetic<V>{})
+    );
     expiration_map[key] = steady_clock::now() + chrono::seconds(ttl);
     if(bykey.count(key) > 0) {
-        // Cache miss
         // Update the value of the key 
-        bykey.at(key).value = value;
+        bykey.at(key).value = compressed_val;
         // Update the frequency of the key
         update_frequency_of_the(key);
         return;
     }
-    // Cache hit
-    if(this->curr_size == this->MAX_SIZE){
+    if(curr_size == MAX_SIZE){
         apply_eviction_policy();
     }
     FrequencyNode<KeyNode<K>> *freq_node = HEAD->next;
@@ -99,8 +104,8 @@ void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
     KeyNode<K> *key_node = new KeyNode<K>(key, freq_node);
     put_keynode_in_frequencynode(freq_node, key_node);
     // Put a new entry into the Hash Table
-    bykey.insert(make_pair(key, MapItem<KeyNode<K>, V>(value, key_node)));
-    ++this->curr_size;
+    bykey.insert(make_pair(key, MapItem<KeyNode<K>, string>(compressed_val, key_node)));
+    ++curr_size;
 }
 
 
@@ -191,7 +196,7 @@ void MemCache<K, V>::remove_keynode_from_frequencynode(
 
 
 template<typename K, typename V>
-void MemCache<K, V>::remove(MapItem<KeyNode<K>, V> item){
+void MemCache<K, V>::remove(MapItem<KeyNode<K>, string> item){
     // Seems redundant at first glance, but nessearly to avoid recursive locking.
     K key = item.node->key;
     remove_keynode_from_frequencynode(item.node->parent, item.node);
@@ -206,7 +211,7 @@ bool MemCache<K, V>::remove(K key) {
     
     bool key_removal_status = false;
     if(bykey.count(key) > 0){
-        MapItem<KeyNode<K>, V> map_item = bykey.at(key);
+        MapItem<KeyNode<K>, string> map_item = bykey.at(key);
         remove_keynode_from_frequencynode(map_item.node->parent, map_item.node);
         bykey.erase(key);
         curr_size -= 1;
