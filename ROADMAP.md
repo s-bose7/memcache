@@ -10,7 +10,7 @@
 # MINOR 
 - Snapshot creation
 
-# MAJOR 
+# MINOR 
 - Data compression
 - Data serialization?
 
