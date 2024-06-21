@@ -32,7 +32,7 @@ private:
     // Maximum size of the cache.
     unsigned int MAX_SIZE;
     // Counter to track the cache size.
-    unsigned int curr_size;
+    atomic<unsigned int> curr_size;
 
     /*  
      *  Head of the Frequency List
