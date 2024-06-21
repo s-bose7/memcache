@@ -1,10 +1,11 @@
-#include "../include/memcache.h"
 
 #include <ctime>
 #include <sys/sysinfo.h>
 #include <cstdint>
 #include <random>
 
+#include "../include/memcache.h"
+#include "../utils/memory_info.h"
 
 const int NUM_ENTRIES = 1000000;
 const int KEY_SIZE = 16;
@@ -12,58 +13,12 @@ const int VALUE_SIZE = 100;
 const int SIZE = 1000000;
 const int OneSecondInMicroSecond = 1000000;
 
-constexpr const char* meminfo_file = "/proc/meminfo";
-constexpr const char* cpuinfo_file = "/proc/cpuinfo";
-// 1 Gigabyte = 1024 megabytes = 1024 * 1024 kbytes = 1024 * 1024 * 1024 bytes;
-constexpr double factor = 1024 * 1024;
-
 const time_t now = time(0);
 const string CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 random_device rd;
 mt19937 gen(rd());
 uniform_int_distribution<int> dist(0, CHARACTERS.size() - 1);
 
-
-size_t get_memory_info(){
-
-	auto ifs = ifstream{meminfo_file};
-	if(!ifs.good()){
-		throw runtime_error("Error: unable to read memory-info file.");
-	}
-    size_t memtotal;
-	string line, label;
-	uint64_t value; 
-	while( getline(ifs, line) ){		
-		stringstream ss{line};	
-		ss >> label >> value;
-
-		if(label == "MemAvailable:"){
-            memtotal = value/factor; // KB -> GB
-            break;
-        }
-	}
-    return memtotal;
-}
-
-
-string get_cpu_info() {
-    ifstream ifs(cpuinfo_file);
-    if (!ifs.good()) {
-        throw runtime_error("Error: unable to open /proc/cpuinfo file.");
-    }
-    string line, cpu_model;
-    while(getline(ifs, line)) {
-        if(line.find("model name") != string::npos) {
-            size_t colon_pos = line.find(":");
-            if(colon_pos != string::npos) {
-                // Skip ": " to get the value
-                cpu_model = line.substr(colon_pos + 2); 
-                break;
-            }
-        }
-    }
-    return cpu_model;
-}
 
 const string CPU = get_cpu_info();
 const size_t RAM  = get_memory_info();
