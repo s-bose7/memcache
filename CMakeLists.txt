@@ -13,6 +13,7 @@ add_library(MemCache STATIC
     src/keynode.cpp
     src/mapitem.cpp
     utils/memory_info.h
+    utils/serialization.h
 )
 
 # Add Snappy

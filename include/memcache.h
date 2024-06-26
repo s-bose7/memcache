@@ -19,6 +19,8 @@
 
 #include "../utils/memory_info.h"
 #include "../utils/compression.h"
+#include "../utils/serialization.h"
+
 
 using namespace std;
 using namespace chrono;
@@ -90,6 +92,10 @@ private:
     thread thread_ttl;
     void run_ttl_thread();
     void apply_expiration_policy();
+
+    // A set of methods for doing serialization and deserialization
+    string serialize(const V& val);
+    V deserialize(const string& serialized_val);
 
 public:
 
