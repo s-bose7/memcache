@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 
 // Shared cache
-MemCache<string, int> cache(100);
+MemCache<string, string> cache(100);
 
 
 // Test atomicity for put operation
@@ -17,7 +17,7 @@ TEST(AtomicityTest, AtomicPutOperation) {
 
     for (int i=1; i<=num_threads; i++) {
         threads.emplace_back([&]() {
-            cache.put("key", 2606);
+            cache.put("key", "val");
             ++counter;
         });
     }
@@ -27,14 +27,14 @@ TEST(AtomicityTest, AtomicPutOperation) {
     }
 
     EXPECT_EQ(counter.load(), num_threads);
-    EXPECT_EQ(cache.get("key"), 2606);
+    EXPECT_EQ(cache.get("key"), "val");
     EXPECT_EQ(cache.size(), 1);
 }
 
 
 // Test atomicity of get operation
 TEST(AtomicityTest, AtomicGetOperation) {
-    cache.put("foo", 3205);
+    cache.put("foo", "bar");
 
     std::atomic<int> counter(0);
     const int num_threads = 100;
@@ -42,7 +42,7 @@ TEST(AtomicityTest, AtomicGetOperation) {
 
     for (int i = 0; i < num_threads; ++i) {
         threads.emplace_back([&]() {
-            if(cache.get("foo") == 3205) {
+            if(cache.get("foo") == "bar") {
                 ++counter;
             }
         });

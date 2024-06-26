@@ -30,9 +30,7 @@ V MemCache<K, V>::get(K key) {
         MapItem<KeyNode<K>, string> map_item = bykey.at(key);
         update_frequency_of_the(key);
         // Return after decompressing the value
-        return Compressor::deserialize<V>(
-            Compressor::uncompress(map_item.value), std::is_arithmetic<V>{}
-        ); 
+        return deserialize(Compressor::uncompress(map_item.value)); 
     }
     return V();
 }
@@ -74,6 +72,34 @@ unsigned int MemCache<K, V>::size(){
     return curr_size;
 }
 
+template<typename K, typename V>
+string MemCache<K, V>::serialize(const V& val){
+    if constexpr (std::is_arithmetic<V>::value) {
+        // For arithmetic data types
+        return Serializer::serialize<V>(val, std::true_type());
+    } else if constexpr (std::is_same<V, string>::value) {
+        // For string data types
+        return Serializer::serialize(val);
+    } else {
+        // For custom object types i.e. user-defined types
+        return Serializer::serialize<V>(val, std::false_type());
+    }
+}
+
+template<typename K, typename V>
+V MemCache<K, V>::deserialize(const string& serialized_val){
+    if constexpr (std::is_arithmetic<V>::value) {
+        // For arithmetic data types
+        return Serializer::deserialize<V>(serialized_val, std::true_type());
+    } else if constexpr (std::is_same<V, string>::value) {
+        // For string data types
+        return Serializer::deserialize(serialized_val);
+    } else {
+        // For custom object types i.e. user-defined types
+        return Serializer::deserialize<V>(serialized_val, std::false_type());
+    }
+}
+
 
 template<typename K, typename V>
 void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
@@ -83,9 +109,7 @@ void MemCache<K, V>::put(K key, V value, unsigned long ttl) {
         ttl = INT_MAX; // Default ttl value
     }
     // Compress value
-    string compressed_val = Compressor::compress(
-        Compressor::serialize(value, std::is_arithmetic<V>{})
-    );
+    string compressed_val = Compressor::compress(serialize(value));
     expiration_map[key] = steady_clock::now() + chrono::seconds(ttl);
     if(bykey.count(key) > 0) {
         // Update the value of the key 
