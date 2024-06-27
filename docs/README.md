@@ -12,12 +12,11 @@ Author: Sudip Bose([sbose007ime.work@gmail.com](mailto:sbose007ime.work@gmail.co
 ## Features
 - [x] Trivial opeations of a cache i.e. `put(key, value)`, `get(key)`, `remove(key)`. 
 - [x] All cache operations are atomic. 
-- [x] Efficient cache replacement algotithm.  
-- [ ] Support multiple eviction policies. 
+- [x] Efficient cache replacement algotithm.   
 - [x] Time-To-Live (TTL) for cache entries.
 - [x] Support heterogeneous data types. 
 - [x] Cache resizing and dynamic capacity management.
-- [ ] Automatic data compression to improve memory usage.
+- [x] Automatic data compression to improve memory usage.
 - [ ] Users can create a transient snapshot to get a consistent view of data.
 - [ ] Data is stored sorted by key to provide an ordered mapping service. 
 - [ ] Users can provide a custom comparison function to override the sort order.
