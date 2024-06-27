@@ -45,6 +45,7 @@ add_executable(run_tests
     tests/test_thread_safety.cpp
     tests/test_atomicity.cpp
     tests/test_snapshot.cpp
+    tests/test_serialization.cpp
 )
 
 if(USE_SUBMODULE_GTEST)
