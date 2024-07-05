@@ -105,20 +105,20 @@ public:
     ~MemCache();
 
     /*
-     * get(int key) Gets the value of the key 
+     * get(K key) Gets the value of the key 
      * if the key exists in the cache. Otherwise, returns default value of V.
     */
     V get(K key);
 
     /*
-     * put(int key, int value, int ttl = -1) 
+     * put(K key, V value, int ttl = -1) 
      * Update the value of the key if present, or inserts the key if not already present. 
      * When the cache reaches its capacity, apply eviction policy before inserting a new item.
     */
     void put(K key, V value, unsigned long ttl = 0);
 
     /*
-     * exists(int key): Check for existence of a particular key.
+     * exists(K key): Check for existence of a particular key.
      * returns true if found. Otherwise, returns false
     */
     bool exists(K key);
@@ -127,7 +127,7 @@ public:
     unsigned int size();
 
     /*
-     * remove(int key): Delete a particular key from the cache.
+     * remove(K key): Delete a particular key from the cache.
      * Returns true if key found and removed. Otherwise, returns false
     */
     bool remove(K key);
@@ -137,7 +137,7 @@ public:
     */
     bool clear();
 
-    // resize(int new_capacity): Resize the cache. 
+    // resize(size_t new_capacity): Resize the cache. 
     void resize(size_t new_capacity);
 
 };
