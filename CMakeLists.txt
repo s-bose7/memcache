@@ -7,13 +7,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Add source and header files
 include_directories(include)
-add_library(MemCache STATIC
+add_library(MemCache SHARED
     src/memcache.cpp
     src/frequencynode.cpp
     src/keynode.cpp
     src/mapitem.cpp
     utils/memory_info.h
     utils/serialization.h
+    utils/extern_lib.h
+    utils/extern_lib.cc
 )
 
 # Add Snappy
